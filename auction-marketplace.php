@@ -34,7 +34,7 @@ function vehicle_auction_enqueue_assets() {
         '1.0.0'
     );
 
-    
+
     wp_enqueue_style(
         'vehicle-auction-style',
         plugins_url('assets/css/style.css', __FILE__),
@@ -80,6 +80,11 @@ register_activation_hook(__FILE__, function () {
     DB_Schema::create_tables();
 });
 
+// Deactivation hook to clear CRON jobs
+register_deactivation_hook(__FILE__, function () {
+    wp_clear_scheduled_hook('auction_cron_event');
+});
+
 function auction_marketplace_run() {
     Plugin_Init::get_instance();
 }
@@ -88,12 +93,12 @@ add_action('plugins_loaded', 'auction_marketplace_run');
 
 function auction_marketplace_run_sync() {
     if (isset($_GET['run_auction_sync']) && $_GET['run_auction_sync'] == 1 && !defined('AUCTION_SYNC_RUNNING')) {
-        // define('AUCTION_SYNC_RUNNING', true);
         $job = new Sync_Job();
-        $job->run(['make' => 'BMW']); // You can use any filters here
+        $job->run();
         exit('Sync complete!');
     }
 }
 
 add_action('admin_init', 'auction_marketplace_run_sync');
+
 
