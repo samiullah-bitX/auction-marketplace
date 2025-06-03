@@ -1,0 +1,263 @@
+/* Grid System */
+
+.auction-wrapper .hide {
+	display: none !important;
+}
+
+.auction-wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-right: -15px;
+    margin-left: -15px; */
+    column-gap: 1.5rem;
+}
+
+.auction-wrapper .col-md-6 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.auction-wrapper #lead-form .form-group {
+    margin-bottom: 1rem;
+    width: 48%;
+}
+
+.auction-wrapper #lead-form label {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: .25rem;
+    display: block;
+    line-height: 1;
+}
+
+.auction-wrapper #lead-form input,
+.auction-wrapper #lead-form select {
+    padding: .5rem 1rem;
+    height: 36px;
+    width: 100%;
+    border: 1px solid #666;
+    border-radius: 3px;
+    padding: .5rem 1rem;
+    transition: all .3s;
+}
+
+.auction-wrapper #lead-form label .checkbox-field-wrapper input{
+    width: auto;
+}
+
+.auction-wrapper #lead-form .select2-container {
+    width: 100% !important;
+}
+
+.auction-wrapper #lead-form .select2-selection__rendered {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0px;
+}
+
+.auction-wrapper #lead-form .select2-container .select2-selection--single,
+.auction-wrapper #lead-form .select2-container .select2-selection--multiple {
+    padding: .25rem .5rem .25rem;
+    min-height: 36px;
+    font-size: 14px;
+}
+
+.auction-wrapper #lead-form .form-group.checkbox-field {
+    display: flex;
+    align-items: center;
+    column-gap: .5rem;
+    min-height: 80px;
+}
+
+.auction-wrapper #lead-form label .checkbox-field-wrapper {
+    display: flex;
+    align-items: center;
+    column-gap: .5rem;
+}
+
+.auction-wrapper #lead-form label .required {
+    color: #dc4c64;
+}
+
+/* Simple Toast */
+
+#auctionSimpleToast.error {
+    background: #dc4c64;
+}
+
+#auctionSimpleToast.success {
+    background: #14a44d;
+}
+
+#auctionSimpleToast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 999;
+    left: 50%;
+    bottom: 30px;
+    font-family: monospace;
+    display: inline-flex;
+    line-height: 12px;
+    z-index: 9999999999;
+}
+
+#auctionSimpleToast span {
+    margin-left: 12px;
+    margin-top: 2px;
+}
+
+#auctionSimpleToast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+/* Preloader */
+
+/* Preloader styles */
+#auctionPreloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: none;
+}
+
+#auctionPreloader::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    margin: -30px 0 0 -30px;
+    border: 10px solid #f3f3f3;
+    border-top: 10px solid #ea222a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .auction-wrapper .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Utility classes for gap and spacing */
+.auction-wrapper .g-2 {
+    gap: 0.5rem;
+}
+
+.auction-wrapper .g-3 {
+    gap: 1rem;
+}
+
+.auction-wrapper .g-4 {
+    gap: 1.5rem;
+}
+
+/* Container for better alignment */
+.auction-wrapper .container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.auction-wrapper #lead-form .phone-input-group{
+    display: flex;;
+}
+
+.auction-wrapper #lead-form .phone-input-group .select2-container{
+    max-width: 80px;
+    margin-right: .5rem;
+}
+
+@media (min-width: 1200px) {
+    .auction-wrapper .container {
+        max-width: 1140px;
+    }
+}
+
+@media (max-width: 767px) {
+    .auction-wrapper #lead-form .form-group {
+        width: 100%;
+    }
+	
+	form#lead-form h5{
+		font-size: 16px;
+	}
+}
