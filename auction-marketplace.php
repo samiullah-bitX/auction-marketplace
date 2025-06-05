@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Auction Marketplace
  * Plugin URI: 
- * Description: Prevent direct access to this fileDescription: A custom WordPress plugin that fetches and displays car auction data from USA and Canada via API integration. The plugin utilizes CRON jobs to ensure auction listings are always accurate and up-to-date. It provides dedicated listing and detail pages for showcasing auction cars.
+ * Description: A custom WordPress plugin that fetches and displays car auction data from USA and Canada via API integration. The plugin utilizes CRON jobs to ensure auction listings are always accurate and up-to-date.
  * Version: 1.0.0
  * Author: Bitcraftx
  * Author URI: https://bitcraftx.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: simeon-auction
+ * Text Domain: auction-marketplace
  */
 
 if (!defined('ABSPATH')) {
@@ -21,12 +21,15 @@ use AuctionMarketplace\Sync_Job;
 
 // Define plugin constants
 define('AUCTION_API_TOKEN', "96ded80c2a9dfb9fe007f4d77526f5b891609497aef159ac3ff0f8a9aa28ba2f");
+define('AUCTION_BASE_URL_V1', "https://copart-iaai-api.com/api/v1");
+define('AUCTION_BASE_URL_V2', "https://copart-iaai-api.com/api/v2");
 // Load autoloader
 require_once plugin_dir_path(__FILE__) . 'includes/class-autoloader.php';
 require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
 // Enqueue scripts and styles
 function vehicle_auction_enqueue_assets() {
+    
     wp_enqueue_style(
         'vehicle-select2-style',
         plugins_url('assets/css/select2.min.css', __FILE__),
@@ -34,12 +37,18 @@ function vehicle_auction_enqueue_assets() {
         '1.0.0'
     );
 
+    wp_enqueue_style(
+        'vehicle-bootstrap-style',
+        plugins_url('assets/css/bootstrap.min.css', __FILE__),
+        array(),
+        '1.0.0'
+    );
 
     wp_enqueue_style(
         'vehicle-auction-style',
         plugins_url('assets/css/style.css', __FILE__),
         array(),
-        '1.0.0'
+        time()
     );
 
     wp_enqueue_script(
@@ -53,6 +62,14 @@ function vehicle_auction_enqueue_assets() {
 	wp_enqueue_script(
         'vehicle-libphonenumber-script',
         plugins_url('assets/js/libphonenumber-js.min.js', __FILE__),
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+
+    wp_enqueue_script(
+        'vehicle-bootstrap-script',
+        plugins_url('assets/js/bootstrap.bundle.min.js', __FILE__),
         array('jquery'),
         '1.0.0',
         true
@@ -83,6 +100,8 @@ register_activation_hook(__FILE__, function () {
 // Deactivation hook to clear CRON jobs
 register_deactivation_hook(__FILE__, function () {
     wp_clear_scheduled_hook('auction_cron_event');
+    wp_clear_scheduled_hook('engine_sync_event');
+    wp_clear_scheduled_hook('image_sync_event');
 });
 
 function auction_marketplace_run() {

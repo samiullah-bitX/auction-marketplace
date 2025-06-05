@@ -89,10 +89,6 @@ Handles:
 - Storing searchable fields in `wp_auction_listings`
 - Storing full raw, engine, and image data in `wp_auction_raw`
 
-Supports:
-- Full data upsert via `wpdb->replace()`
-- Future CRON or manual syncs
-
 ## Recurring Data Sync (WP-Cron)
 
 - Interval: Every 30 minutes
@@ -103,6 +99,30 @@ Supports:
 To verify WP-Cron is running:
 - Use CLI: `wp cron event list`
 - Use plugin: WP Crontrol
+
+### Lightweight Cron Sync Jobs
+
+| Job              | Interval    | Purpose                                     |
+|------------------|-------------|---------------------------------------------|
+| `engine_sync_event` | Every minute | Processes 1 unsynced VIN for engine info   |
+| `image_sync_event`  | Every minute | Processes 1 unsynced VIN for car images    |
+
+This approach:
+- Minimizes API strain
+- Ensures async, safe enrichment
+- Avoids duplicate processing via flag updates
+
+## Front-End Shortcodes
+
+Embed these in any WordPress post/page:
+
+- `[auction_listings]` – Displays the latest active listings
+- `[auction_car_detail vin="..."]` – Displays a detailed view for a specific VIN
+
+Templates are located in:
+- `/templates/listings.php`
+- `/templates/detail.php`
+
 
 ## Roadmap
 

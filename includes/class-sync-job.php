@@ -41,24 +41,29 @@ class Sync_Job {
 
                 // Prepare main fields
                 $main_data = [
-                    'auction_name'    => $auction_name,
-                    'vin'             => $vin,
-                    'make'            => $car['make'] ?? null,
-                    'model'           => $car['model'] ?? null,
-                    'year'            => $car['year'] ?? null,
-                    'location'        => $car['location'] ?? null,
-                    'body_style'      => $car['body_style'] ?? null,
-                    'color'           => $car['color'] ?? null,
-                    'drive'           => $car['drive'] ?? null,
-                    'lot_number'      => $car['lot_number'] ?? null,
-                    'transmission'    => $car['transmission'] ?? null,
-                    'fuel'            => $car['fuel'] ?? null,
-                    'odometer'        => $car['odometer'] ?? null,
-                    'primary_damage'  => $car['primary_damage'] ?? null,
-                    'seller'          => $car['seller'] ?? null,
-                    'sale_date'       => isset($car['buy_now_car']['sale_date']) ? date('Y-m-d H:i:s', strtotime($car['buy_now_car']['sale_date'])) : null,
-                    'status'          => 'active',
-                    'updated_at'      => $updated_at,
+                    'auction_name'          => $auction_name,
+                    'vin'                   => $vin,
+                    'make'                  => $car['make'] ?? null,
+                    'model'                 => $car['model'] ?? null,
+                    'year'                  => $car['year'] ?? null,
+                    'location'              => $car['location'] ?? null,
+                    'body_style'            => $car['body_style'] ?? null,
+                    'color'                 => $car['color'] ?? null,
+                    'drive'                 => $car['drive'] ?? null,
+                    'lot_number'            => $car['lot_number'] ?? null,
+                    'transmission'          => $car['transmission'] ?? null,
+                    'fuel'                  => $car['fuel'] ?? null,
+                    'odometer'              => $car['odometer'] ?? null,
+                    'primary_damage'        => $car['primary_damage'] ?? null,
+                    'seller'                => $car['seller'] ?? null,
+                    'sale_date'             => isset($car['active_bidding'][0]['sale_date']) ? $car['active_bidding'][0]['sale_date'] : null,
+                    'primary_image_url'     => $car['car_photo']['photo'][0] ?? null,
+                    'crnt_bid_price'        => $car['active_bidding'][0]['current_bid'] ?? null,
+                    'buy_now'               => ($car['buy_now_car'] != null && !empty($car['buy_now_car'])) ? $car['buy_now_car']["purchase_price"] : null,
+                    'engine_info_synced'    => 0, // Initially not synced
+                    'car_info_synced'       => 0, // Initially not synced
+                    'status'                => 'active',
+                    'updated_at'            => $updated_at,
                 ];
 
                 // Check if record exists
@@ -84,16 +89,10 @@ class Sync_Job {
                     }
                 }
 
-                // Fetch enrichments
-                $engine_data = $this->api->fetch_engine_info($vin);
-                $image_data  = $this->api->fetch_car_by_vin($vin);
-
                 // Prepare raw table data
                 $raw_data = [
                     'vin'          => $vin,
                     'raw_json'     => wp_json_encode($car),
-                    'engine_json'  => wp_json_encode($engine_data),
-                    'image_json'   => wp_json_encode($image_data),
                     'updated_at'   => $updated_at,
                 ];
 

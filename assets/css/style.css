@@ -19,12 +19,12 @@
     padding-left: 15px;
 }
 
-.auction-wrapper #lead-form .form-group {
+.auction-wrapper .form-group {
     margin-bottom: 1rem;
     width: 48%;
 }
 
-.auction-wrapper #lead-form label {
+.auction-wrapper label {
     font-weight: 700;
     font-size: 14px;
     margin-bottom: .25rem;
@@ -32,8 +32,8 @@
     line-height: 1;
 }
 
-.auction-wrapper #lead-form input,
-.auction-wrapper #lead-form select {
+.auction-wrapper input,
+.auction-wrapper select {
     padding: .5rem 1rem;
     height: 36px;
     width: 100%;
@@ -43,41 +43,46 @@
     transition: all .3s;
 }
 
-.auction-wrapper #lead-form label .checkbox-field-wrapper input{
+.auction-wrapper label .checkbox-field-wrapper input{
     width: auto;
 }
 
-.auction-wrapper #lead-form .select2-container {
+.auction-wrapper .select2-container {
     width: 100% !important;
 }
 
-.auction-wrapper #lead-form .select2-selection__rendered {
+.auction-wrapper .select2-selection__rendered {
     font-size: 14px;
     font-weight: 500;
     margin: 0px;
 }
 
-.auction-wrapper #lead-form .select2-container .select2-selection--single,
-.auction-wrapper #lead-form .select2-container .select2-selection--multiple {
+.bitcx_amp_filter_section input,
+.bitcx_amp_filter_section select {
+    font-size: 14px;
+}
+
+.bitcx_amp_filter_section .select2-container .select2-selection--single,
+.bitcx_amp_filter_section .select2-container .select2-selection--multiple {
     padding: .25rem .5rem .25rem;
     min-height: 36px;
     font-size: 14px;
 }
 
-.auction-wrapper #lead-form .form-group.checkbox-field {
+.bitcx_amp_filter_section .form-group.checkbox-field {
     display: flex;
     align-items: center;
     column-gap: .5rem;
     min-height: 80px;
 }
 
-.auction-wrapper #lead-form label .checkbox-field-wrapper {
+.bitcx_amp_filter_section label .checkbox-field-wrapper {
     display: flex;
     align-items: center;
     column-gap: .5rem;
 }
 
-.auction-wrapper #lead-form label .required {
+.bitcx_amp_filter_section label .required {
     color: #dc4c64;
 }
 
@@ -237,13 +242,78 @@
     margin-left: auto;
 }
 
-.auction-wrapper #lead-form .phone-input-group{
+.auction-wrapper .phone-input-group{
     display: flex;;
 }
 
-.auction-wrapper #lead-form .phone-input-group .select2-container{
+.auction-wrapper .phone-input-group .select2-container{
     max-width: 80px;
     margin-right: .5rem;
+}
+
+/* 
+    * 
+    * Auction Marketplace Shortcodes
+    * 
+*/
+
+/* Main Listing [auction_listings] */
+
+.card.bitcx_amp_card {
+    font-size: 14px;
+}
+
+.card.bitcx_amp_card .bitcx_amp_card_title {
+    font-size: 18px;
+}
+
+.card.bitcx_amp_card .bitcx_amp_card_title a{
+    text-decoration: none;
+}
+
+.card.bitcx_amp_card .bitcx_amp_card_subtitle{
+    display: flex;
+    column-gap: 1rem;
+}
+
+.card.bitcx_amp_card .bitcx_amp_card_subtitle span {
+    padding: .35rem .75rem;
+    background: #747474;
+    border-radius: 1.5rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.card.bitcx_amp_card.iaai span.auction_name {
+    background: #D91E1E;
+}
+
+.card.bitcx_amp_card.copart span.auction_name {
+    background: #0E5DB8;
+}
+
+.card.bitcx_amp_card.active span.status {
+    background: green;
+}
+
+.card.bitcx_amp_card.inactive span.status {
+    background: #747474;
+}
+
+.card.bitcx_amp_card .bitcx_amp_timer {
+    color: #D91E1E;
+}
+
+.card.bitcx_amp_card .bid_price {
+    padding: .5rem;
+    background: #f5f5f5;
+    border-radius: .5rem;
+    font-size: 14px;
+}
+
+.card.bitcx_amp_card .bid_price span.buy_now b {
+    color: green;
 }
 
 @media (min-width: 1200px) {
@@ -253,11 +323,11 @@
 }
 
 @media (max-width: 767px) {
-    .auction-wrapper #lead-form .form-group {
+    .auction-wrapper .form-group {
         width: 100%;
     }
 	
-	form#lead-form h5{
+	formh5{
 		font-size: 16px;
 	}
 }

@@ -31,13 +31,13 @@ class API_Client {
                 'per_page' => 10,
                 'page' => 1,
                 'car_info_vehicle_type' => "PASSENGER CAR",
-                'auction_name' => 'IAAI',
+                'auction_name' => 'COPART',
                 'auction_names' => [
-                    'IAAI CANADA',
                     'COPART CANADA',
-                    'IAAI'
+                    'IAAI CANADA'
                 ],
                 'without_sale_date' => 0,
+                'auction_date_from' => date('Y-m-d'), // Set to current date if not defined
             ];
             // Only set defaults if not already set
             foreach ($defaults as $key => $value) {
