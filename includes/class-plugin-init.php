@@ -22,6 +22,22 @@ class Plugin_Init {
     public function register_hooks() {
         add_filter('cron_schedules', [$this, 'add_custom_cron_interval']);
         add_action('auction_cron_event', [$this, 'handle_cron_event']);
+        add_action('engine_sync_event', [$this, 'handle_engine_sync_event']);
+        add_action('image_sync_event', [$this, 'handle_image_sync_event']);
+        // add_action('status_sync_event', [$this, 'handle_status_sync_event']);
+        
+        // add_action('engine_sync_event', function () {
+        //     (new \AuctionMarketplace\Engine_Job())->run();
+        // });
+        
+        // add_action('image_sync_event', function () {
+        //     (new \AuctionMarketplace\Image_Job())->run();
+        // });
+        
+        // add_action('status_sync_event', function () {
+        //     (new \AuctionMarketplace\Status_Job())->run();
+        // });
+
         add_action('wp_footer', [self::class, 'inject_footer_code']);
         
         Shortcodes::register();
@@ -38,6 +54,10 @@ class Plugin_Init {
         if (!wp_next_scheduled('image_sync_event')) {
             wp_schedule_event(time(), 'every_2_minutes', 'image_sync_event');
         }
+
+        // if (!wp_next_scheduled('status_sync_event')) {
+        //     wp_schedule_event(time(), 'every_2_minutes', 'status_sync_event');
+        // }
 
     }
 
@@ -69,6 +89,21 @@ class Plugin_Init {
         $job = new Sync_Job();
         $job->run(); // Optional: add filters here
     }
+
+    public function handle_engine_sync_event() {
+        $job = new Engine_Job();
+        $job->run(); // Optional: add filters here
+    }
+
+    public function handle_image_sync_event() {
+        $job = new Image_Job();
+        $job->run(); // Optional: add filters here
+    }
+
+    // public function handle_status_sync_event() {
+    //     $job = new Status_Job();
+    //     $job->run(); // Optional: add filters here
+    // }
 
     public static function inject_footer_code() {
         ?>

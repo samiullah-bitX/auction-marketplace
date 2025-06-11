@@ -1,4 +1,7 @@
 <?php
+namespace AuctionMarketplace;
+
+defined('ABSPATH') || exit;
 
 class Engine_Job {
     public function run() {
@@ -7,8 +10,13 @@ class Engine_Job {
         $table = $wpdb->prefix . 'auction_listings';
         $raw_table = $wpdb->prefix . 'auction_raw';
 
-        $rows = $wpdb->get_results("SELECT vin, auction_id FROM $table WHERE engine_synced = 0 LIMIT 25");
-
+        $rows = $wpdb->get_results("SELECT vin FROM $table WHERE engine_info_synced = 0 LIMIT 25");
+        if (empty($rows)) {
+            log_debug('[Engine Job] No records to sync.');
+            return;
+        }else{
+            log_debug('[Engine Job] Found ' . count($rows) . ' records to sync.');
+        }
         foreach ($rows as $row) {
             $engine = $api->fetch_engine_info($row->vin);
             if (!$engine) continue;
@@ -18,7 +26,7 @@ class Engine_Job {
                 'updated_at' => current_time('mysql')
             ], ['vin' => $row->vin]);
 
-            $wpdb->update($table, ['engine_synced' => 1], ['vin' => $row->vin]);
+            $wpdb->update($table, ['engine_info_synced' => 1], ['vin' => $row->vin]);
 
             log_debug("[Engine Job] Synced VIN: {$row->vin}");
         }

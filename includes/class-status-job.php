@@ -1,5 +1,9 @@
 <?php
 
+namespace AuctionMarketplace;
+
+defined('ABSPATH') || exit;
+
 class Status_Job {
     public function run() {
         global $wpdb;

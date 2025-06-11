@@ -1,14 +1,3 @@
-<?php
-    global $wpdb;
-    $table = $wpdb->prefix . 'auction_listings';
-    $results = $wpdb->get_results("SELECT * FROM $table WHERE status = 'active' ORDER BY updated_at DESC LIMIT 10");
-
-    if (empty($results)) {
-        echo '<p>No active auctions found.</p>';
-        return;
-    }
-?>
-
 <!-- Auction Grid -->
 <section class="bitcx_amp_auctions py-5">
     <div class="container">
@@ -40,7 +29,7 @@
                     };
 
                     $auction_status = ($diff > 0) ? $car->status : 'inactive';
-                    $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($car->auction_name));
+                    $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($auction_status));
                     $classes = trim($classes);
 
                     $vehicle_url = "";

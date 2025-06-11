@@ -3,12 +3,24 @@
     <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-white rounded border">
         
         <!-- Active Filter Chip -->
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="badge rounded-pill bg-light text-dark px-3 py-2 d-flex align-items-center">
-                0 - 250 000 miles
-                <button type="button" class="btn-close btn-close-sm ms-2" aria-label="Remove filter"></button>
-            </span>
-        </div>
+        <?php if (!empty($listing_params)): ?>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <?php foreach ($listing_params as $key => $value): ?>
+                    <span class="badge rounded-pill bg-light text-dark px-3 py-2 d-flex align-items-center">
+                        <?php
+                            $label = str_replace(['-', '_'], ' ', $key);
+                            $label = ucwords($label);
+                            if (in_array(strtolower($key), ['copart', 'iaai', 'archive'])) {
+                                echo htmlspecialchars(strtoupper($label));
+                            } else {
+                                echo htmlspecialchars($label) . " : " . htmlspecialchars($value);
+                            }
+                        ?>
+                        <button type="button" class="btn-close btn-close-sm ms-2" aria-label="Remove filter"></button>
+                    </span>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Sort By -->
         <div class="d-flex align-items-center gap-2">
@@ -37,14 +49,14 @@
                     <div class="mb-4">
                         <label class="fw-semibold">Estimated price ($)</label>
                         <div class="d-flex justify-content-between small">
-                        <span></span>
-                        <span class="text-muted">USD</span>
+                            <span></span>
+                            <span class="text-muted">USD</span>
                         </div>
                         <input type="range" class="form-range" min="0" max="100000">
                         <div class="d-flex gap-2 mt-2">
-                        <input type="number" class="form-control" value="0">
-                        <span class="align-self-center">—</span>
-                        <input type="number" class="form-control" value="100000">
+                            <input type="number" class="form-control" value="0">
+                            <span class="align-self-center">—</span>
+                            <input type="number" class="form-control" value="100000">
                         </div>
                     </div>
 
@@ -52,9 +64,9 @@
                     <div class="mb-4">
                         <label class="fw-semibold">Year</label>
                         <div class="d-flex gap-2">
-                        <input type="number" class="form-control" value="1900">
-                        <span class="align-self-center">—</span>
-                        <input type="number" class="form-control" value="2026">
+                            <input type="number" class="form-control" value="1900">
+                            <span class="align-self-center">—</span>
+                            <input type="number" class="form-control" value="2026">
                         </div>
                     </div>
 
@@ -62,9 +74,9 @@
                     <div class="mb-4">
                         <label class="fw-semibold">Auction Type</label>
                         <div class="d-flex gap-2 mt-2">
-                        <button class="btn btn-light rounded-pill px-3 bitcx_amp_filter_tab active">All</button>
-                        <button class="btn btn-primary rounded-pill px-3 bitcx_amp_filter_tab">Copart</button>
-                        <button class="btn btn-danger rounded-pill px-3 bitcx_amp_filter_tab">IAAI</button>
+                            <button class="btn btn-light rounded-pill px-3 bitcx_amp_filter_tab active">All</button>
+                            <button class="btn btn-primary rounded-pill px-3 bitcx_amp_filter_tab">Copart</button>
+                            <button class="btn btn-danger rounded-pill px-3 bitcx_amp_filter_tab">IAAI</button>
                         </div>
                     </div>
 
@@ -72,10 +84,10 @@
                     <div class="mb-4">
                         <h6>Start code</h6>
                         <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Stationary / No information</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Vehicle starts</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Run and Drive</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Stationary / No information</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Vehicle starts</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Run and Drive</button>
                         </div>
                     </div>
 
@@ -83,10 +95,10 @@
                     <div class="mb-4">
                         <h6>Drive Type</h6>
                         <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">FWD Front wheel drive</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">RWD Rear wheel drive</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">AWD All wheel drive</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">FWD Front wheel drive</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">RWD Rear wheel drive</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">AWD All wheel drive</button>
                         </div>
                     </div>
 
@@ -94,9 +106,9 @@
                     <div class="mb-4">
                         <h6>Transmission</h6>
                         <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">A Automatic</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">M Manual</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">A Automatic</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">M Manual</button>
                         </div>
                     </div>
 
@@ -104,12 +116,12 @@
                     <div class="mb-4">
                         <h6>Body Style</h6>
                         <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm bitcx_amp_filter_tab active">All</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Sedan</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">SUV</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Coupe</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">Pickup</button>
-                        <button class="btn btn-sm bitcx_amp_filter_tab">See more</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab active">All</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Sedan</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">SUV</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Coupe</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">Pickup</button>
+                            <button class="btn btn-sm bitcx_amp_filter_tab">See more</button>
                         </div>
                     </div>
                 </div>
@@ -119,340 +131,113 @@
         <!-- Right Listing Content -->
         <div class="col-md-12 col-lg-9">
 
-            <!-- Tabs -->
-            <ul class="nav nav-tabs mb-3 bitcx_amp_filter_tabs">
-                <li class="nav-item">
-                <a class="nav-link active" href="#">All</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Opened Auction</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Live</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Finished Today</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Fast Buy</a>
-                </li>
-            </ul>
+            <?php if (!empty($results)): ?>
+                <!-- Card Listing -->
+                    <?php 
+                        foreach ($results as $key => $car) { 
+                            $car_title = esc_html($car->make . ' ' . $car->model . ' ' . $car->year);
+                            $primary_image_url = $car->primary_image_url ?? "https://placehold.co/845x633?text=Image+not+Available";
+                            $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
+                            $auction_name = strtoupper($car->auction_name);
+                            
+                            $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                            
+                            $auction_status = ($remaining_str != "Expired") ? $car->status : 'inactive';
+                            $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($auction_status));
+                            $classes = trim($classes);
 
-            <!-- Card Listing -->
-            <div class="card bitcx_amp_car_card p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded">
-                                <div class="carousel-item active">
-                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
+                            $sale_date_str = 'N/A';
+                            if ($car->sale_date) {
+                                // If it's a timestamp in milliseconds, convert to seconds
+                                if (is_numeric($car->sale_date) && strlen($car->sale_date) > 10) {
+                                    $car->sale_date = intval($car->sale_date / 1000);
+                                }
+                                $sale_date_str = date('M d, Y H:i', $car->sale_date);
+                            }
+                    ?>                        
+                        <div class="card bitcx_amp_car_card p-3 mb-4 <?php echo $classes; ?>">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner rounded">
+                                            <div class="carousel-item active">
+                                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
+                                            </div>
+                                        </div>
+                                        <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button> -->
+                                    </div>
                                 </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
+                                <div class="col-md-5">
+                                    <h5><a href="<?php echo esc_url($vehicle_url); ?>"><?php echo esc_attr($car_title); ?></a></h5>
+                                    <p class="text-muted small mb-1">• <?php echo esc_attr($car->vin); ?> • <?php echo esc_attr($car->lot_number); ?></p>
+                                    <!-- <div class="d-flex gap-2 align-items-center mb-2">
+                                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
+                                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
+                                    </div> -->
+                                    <div class="row text-muted small">
+                                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
+                                        <div class="col-6">Seller: <span class="text-dark"><?php echo ($car->seller ? esc_attr($car->seller) : "N/A"); ?></span></div>
+                                        <div class="col-6">Location: <span class="text-dark"><?php echo esc_attr($car->location); ?></span></div>
+                                        <div class="col-6">Damage: <span class="text-dark"><?php echo esc_attr($car->primary_damage); ?></span></div>
+                                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
+                                        <div class="col-6">Status: <span class="text-warning fw-medium"><?php echo esc_attr($auction_status); ?></span></div>
+                                    </div>
                                 </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
+                                <div class="col-md-3 text-end d-flex flex-column justify-content-between">
+                                    <div>
+                                        <button class="btn btn-success btn-sm mb-2"><?php echo esc_attr($auction_name); ?></button>
+                                        <!-- <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button> -->
+                                    </div>
+                                    <!-- <div class="small text-muted mb-1">$4,950 - $5,500</div> -->
+                                    <div class="small mb-1">
+                                        <i class="bi bi-calendar3"></i>
+                                        <span class="<?php echo esc_attr($auction_status == "inactive" ? "text-danger" : "text-success"); ?>">
+                                            <?php echo esc_html($sale_date_str); ?>
+                                        </span>
+                                    </div>
+                                    <div class="small <?php echo esc_attr ($auction_status == "inactive") ? "hide" : "text-success" ; ?> mb-3"><i class="bi bi-clock"></i> <span class="bitcx_amp_time"><?php echo $remaining_str . (($remaining_str != "Expired") ? " left " : " "); ?> </span></div>
+                                    <div class="bg-light rounded p-2 mb-2">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold"><?php echo '$'.esc_attr($car->crnt_bid_price ?? 0) ?></span>
+                                            <?php if ($car->buy_now): ?>
+                                                <span class="fw-bold bid-price"><?php echo '$'.esc_attr($car->buy_now) ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Current Bid:</span>
+                                            <?php if ($car->buy_now): ?>
+                                                <span>Buy Now:</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <?php
+                                        if ($auction_status != "inactive") :
+                                            echo '<button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>';
+                                        else:
+                                            echo '<button class="btn btn-danger rounded-pill w-100 theme-btn">Expired</button>';
+                                        endif;
+                                    ?>
                                 </div>
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
                         </div>
-                    </div>
-                    <div class="col-md-5">
-                        <h5><a href="#" class="text-decoration-none ">2019 Mercedes-Benz C-Class, 300</a></h5>
-                        <p class="text-muted small mb-1">• 55SWF8DB1KU296703 • 1-76256964</p>
-                        <div class="d-flex gap-2 align-items-center mb-2">
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
-                        </div>
-                        <div class="row text-muted small">
-                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
-                        <div class="col-6">Seller: <span class="text-dark">Non-insurance Company</span></div>
-                        <div class="col-6">Location: <span class="text-dark">NCS MOUNTA...</span></div>
-                        <div class="col-6">Damage: <span class="text-dark">Front end</span></div>
-                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
-                        <div class="col-6">Status: <span class="text-warning fw-medium">No information</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-between">
-                        <div>
-                            <button class="btn btn-success btn-sm mb-2">Copart</button>
-                            <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="small text-muted mb-1">$4,950 - $5,500</div>
-                        <div class="small mb-1"><i class="bi bi-calendar3"></i> Wed 4 Jun, 13:00 GMT+2</div>
-                        <div class="small text-success mb-3"><i class="bi bi-clock"></i> 0 d 3 h 48 min left</div>
-                        <div class="bg-light rounded p-2 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold">$4,950</span>
-                            <span class=" fw-bold bid-price">$7,500</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span>Current Bid:</span>
-                            <span>Buy Now:</span>
-                        </div>
-                        </div>
-                        <button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>
-                    </div>
+                    <?php } ?>
                 </div>
-            </div>
-
-            <!-- Card Listing -->
-            <div class="card bitcx_amp_car_card p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded">
-                                <div class="carousel-item active">
-                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <h5><a href="#" class="text-decoration-none ">2019 Mercedes-Benz C-Class, 300</a></h5>
-                        <p class="text-muted small mb-1">• 55SWF8DB1KU296703 • 1-76256964</p>
-                        <div class="d-flex gap-2 align-items-center mb-2">
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
-                        </div>
-                        <div class="row text-muted small">
-                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
-                        <div class="col-6">Seller: <span class="text-dark">Non-insurance Company</span></div>
-                        <div class="col-6">Location: <span class="text-dark">NCS MOUNTA...</span></div>
-                        <div class="col-6">Damage: <span class="text-dark">Front end</span></div>
-                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
-                        <div class="col-6">Status: <span class="text-warning fw-medium">No information</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-between">
-                        <div>
-                        <button class="btn btn-success btn-sm mb-2">Copart</button>
-                        <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="small text-muted mb-1">$4,950 - $5,500</div>
-                        <div class="small mb-1"><i class="bi bi-calendar3"></i> Wed 4 Jun, 13:00 GMT+2</div>
-                        <div class="small text-success mb-3"><i class="bi bi-clock"></i> 0 d 3 h 48 min left</div>
-                        <div class="bg-light rounded p-2 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold">$4,950</span>
-                            <span class=" fw-bold bid-price">$7,500</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span>Current Bid:</span>
-                            <span>Buy Now:</span>
-                        </div>
-                        </div>
-                        <button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Listing -->
-            <div class="card bitcx_amp_car_card p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded">
-                                <div class="carousel-item active">
-                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <h5><a href="#" class="text-decoration-none ">2019 Mercedes-Benz C-Class, 300</a></h5>
-                        <p class="text-muted small mb-1">• 55SWF8DB1KU296703 • 1-76256964</p>
-                        <div class="d-flex gap-2 align-items-center mb-2">
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
-                        </div>
-                        <div class="row text-muted small">
-                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
-                        <div class="col-6">Seller: <span class="text-dark">Non-insurance Company</span></div>
-                        <div class="col-6">Location: <span class="text-dark">NCS MOUNTA...</span></div>
-                        <div class="col-6">Damage: <span class="text-dark">Front end</span></div>
-                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
-                        <div class="col-6">Status: <span class="text-warning fw-medium">No information</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-between">
-                        <div>
-                            <button class="btn btn-success btn-sm mb-2">Copart</button>
-                            <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="small text-muted mb-1">$4,950 - $5,500</div>
-                        <div class="small mb-1"><i class="bi bi-calendar3"></i> Wed 4 Jun, 13:00 GMT+2</div>
-                        <div class="small text-success mb-3"><i class="bi bi-clock"></i> 0 d 3 h 48 min left</div>
-                        <div class="bg-light rounded p-2 mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold">$4,950</span>
-                                <span class=" fw-bold bid-price">$7,500</span>
-                            </div>
-                            <div class="d-flex justify-content-between small">
-                                <span>Current Bid:</span>
-                                <span>Buy Now:</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Listing -->
-            <div class="card bitcx_amp_car_card p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded">
-                                <div class="carousel-item active">
-                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <h5><a href="#" class="text-decoration-none ">2019 Mercedes-Benz C-Class, 300</a></h5>
-                        <p class="text-muted small mb-1">• 55SWF8DB1KU296703 • 1-76256964</p>
-                        <div class="d-flex gap-2 align-items-center mb-2">
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
-                        </div>
-                        <div class="row text-muted small">
-                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
-                        <div class="col-6">Seller: <span class="text-dark">Non-insurance Company</span></div>
-                        <div class="col-6">Location: <span class="text-dark">NCS MOUNTA...</span></div>
-                        <div class="col-6">Damage: <span class="text-dark">Front end</span></div>
-                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
-                        <div class="col-6">Status: <span class="text-warning fw-medium">No information</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-between">
-                        <div>
-                        <button class="btn btn-success btn-sm mb-2">Copart</button>
-                        <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="small text-muted mb-1">$4,950 - $5,500</div>
-                        <div class="small mb-1"><i class="bi bi-calendar3"></i> Wed 4 Jun, 13:00 GMT+2</div>
-                        <div class="small text-success mb-3"><i class="bi bi-clock"></i> 0 d 3 h 48 min left</div>
-                        <div class="bg-light rounded p-2 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold">$4,950</span>
-                            <span class=" fw-bold bid-price">$7,500</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span>Current Bid:</span>
-                            <span>Buy Now:</span>
-                        </div>
-                        </div>
-                        <button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card Listing -->
-            <div class="card bitcx_amp_car_card p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div id="carCarousel1" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded">
-                                <div class="carousel-item active">
-                                <img src="/assets/listing-img1.jpg" class="d-block w-100" alt="Car Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img2.jpg" class="d-block w-100" alt="Car Image 2">
-                                </div>
-                                <div class="carousel-item">
-                                <img src="/assets/listing-img3.jpg" class="d-block w-100" alt="Car Image 3">
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel1" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carCarousel1" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <h5><a href="#" class="text-decoration-none ">2019 Mercedes-Benz C-Class, 300</a></h5>
-                        <p class="text-muted small mb-1">• 55SWF8DB1KU296703 • 1-76256964</p>
-                        <div class="d-flex gap-2 align-items-center mb-2">
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
-                        <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
-                        </div>
-                        <div class="row text-muted small">
-                        <div class="col-6">Milage: <span class="text-dark">45k miles (73k km)</span></div>
-                        <div class="col-6">Seller: <span class="text-dark">Non-insurance Company</span></div>
-                        <div class="col-6">Location: <span class="text-dark">NCS MOUNTA...</span></div>
-                        <div class="col-6">Damage: <span class="text-dark">Front end</span></div>
-                        <div class="col-6">Sale doc.: <span class="text-dark">CT (Texas)</span></div>
-                        <div class="col-6">Status: <span class="text-warning fw-medium">No information</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-between">
-                        <div>
-                        <button class="btn btn-success btn-sm mb-2">Copart</button>
-                        <button class="btn btn-light btn-sm mb-2"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="small text-muted mb-1">$4,950 - $5,500</div>
-                        <div class="small mb-1"><i class="bi bi-calendar3"></i> Wed 4 Jun, 13:00 GMT+2</div>
-                        <div class="small text-success mb-3"><i class="bi bi-clock"></i> 0 d 3 h 48 min left</div>
-                        <div class="bg-light rounded p-2 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold">$4,950</span>
-                            <span class=" fw-bold bid-price">$7,500</span>
-                        </div>
-                        <div class="d-flex justify-content-between small">
-                            <span>Current Bid:</span>
-                            <span>Buy Now:</span>
-                        </div>
-                        </div>
-                        <button class="btn btn-success rounded-pill w-100 theme-btn">Opened auction</button>
-                    </div>
-                </div>
-            </div>
-
+            <?php else: ?>
+            <?php
+                echo '<div class="alert alert-info">No Results Found, Try broaden your search.</div>';
+                endif;
+            ?>
         </div>
     </div>
 </div>

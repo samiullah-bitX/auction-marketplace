@@ -189,4 +189,53 @@ jQuery(document).ready(function($) {
         phoneValidInput.value = '0';
     });
 
+    jQuery('.main-filters-btn').on('click', function() {
+        const queryParams = [];
+
+        // Collect filter values
+        const vinOrLot = jQuery('.bitcx_amp_filter_input[type="text"]').val();
+        if (vinOrLot) {
+            queryParams.push(`vin=${encodeURIComponent(vinOrLot)}`);
+        }else{
+            const vehicleMake = jQuery('#vehicle_make option:selected').text().trim();
+            if (vehicleMake) {
+                queryParams.push(`make=${encodeURIComponent(vehicleMake)}`);
+            }
+    
+            const vehicleModel = jQuery('#vehicle_model option:selected').text().trim();
+            if (vehicleModel) {
+                queryParams.push(`model=${encodeURIComponent(vehicleModel)}`);
+            }
+    
+            const yearRange = jQuery('#year_range').val();
+            if (yearRange) {
+                queryParams.push(`year_range=${encodeURIComponent(yearRange)}`);
+            }
+    
+            const bidRange = jQuery('#bid_range').val();
+            if (bidRange) {
+                queryParams.push(`bid_range=${encodeURIComponent(bidRange)}`);
+            }
+    
+            const archived = jQuery('#bitcx_amp_archived').is(':checked');
+            if (archived) {
+                queryParams.push(`archived=1`);
+            }
+    
+            const copart = jQuery('#copart').is(':checked');
+            if (copart) {
+                queryParams.push(`copart=1`);
+            }
+    
+            const iaai = jQuery('#iaai').is(':checked');
+            if (iaai) {
+                queryParams.push(`iaai=1`);
+            }
+        }
+        
+
+        // Redirect to auction-filters page with query params
+        const queryString = queryParams.join('&');
+        window.location.href = `auction-filters?${queryString}`;
+    });
 });

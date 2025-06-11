@@ -1,4 +1,7 @@
 <?php
+namespace AuctionMarketplace;
+
+defined('ABSPATH') || exit;
 
 class Image_Job {
     public function run() {
@@ -7,8 +10,11 @@ class Image_Job {
         $table = $wpdb->prefix . 'auction_listings';
         $raw_table = $wpdb->prefix . 'auction_raw';
 
-        $rows = $wpdb->get_results("SELECT vin, auction_id FROM $table WHERE car_info_synced = 0 LIMIT 25");
-
+        $rows = $wpdb->get_results("SELECT vin FROM $table WHERE car_info_synced = 0 LIMIT 25");
+        if (empty($rows)) {
+            log_debug('[Image Job] No records to sync.');
+            return;
+        }
         foreach ($rows as $row) {
             $image_data = $api->fetch_car_by_vin($row->vin);
             if (!$image_data) continue;
