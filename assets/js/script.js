@@ -219,13 +219,15 @@ jQuery(document).ready(function($) {
         if (vinOrLot) {
             queryParams.push(`vin=${encodeURIComponent(vinOrLot)}`);
         }else{
-            const vehicleMake = jQuery('#vehicle_make option:selected').text().trim();
-            if (vehicleMake) {
+            const vehicleMakeID = jQuery('#vehicle_make').val();
+            if (vehicleMakeID) {
+                const vehicleMake = jQuery('#vehicle_make option:selected').text().trim();
                 queryParams.push(`make=${encodeURIComponent(vehicleMake)}`);
             }
     
-            const vehicleModel = jQuery('#vehicle_model option:selected').text().trim();
-            if (vehicleModel) {
+            const vehicleModelID = jQuery('#vehicle_model').val();
+            if (vehicleModelID) {
+                const vehicleModel = jQuery('#vehicle_model option:selected').text().trim();
                 queryParams.push(`model=${encodeURIComponent(vehicleModel)}`);
             }
     
@@ -254,7 +256,6 @@ jQuery(document).ready(function($) {
                 queryParams.push(`iaai=1`);
             }
         }
-        
 
         // Redirect to auction-filters page with query params
         const queryString = queryParams.join('&');

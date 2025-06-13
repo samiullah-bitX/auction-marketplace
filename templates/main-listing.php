@@ -15,7 +15,7 @@
                     $auction_name = strtoupper($car->auction_name);
                     
                     $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
-                    $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                    $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->vin, $car->auction_name, $primary_image_url, $car->lot_number ?? null);
                     $sale_date_str = AuctionMarketplace\Shortcodes::format_sale_date($car->sale_date);
                     
                     $auction_status = ($remaining_str != "Expired") ? $car->status : 'inactive';

@@ -131,7 +131,11 @@
         <!-- Right Listing Content -->
         <div class="col-md-12 col-lg-9">
             <div id="listing-results">
-
+                <?php if (!empty($results)): ?>
+                    <div class="mb-3">
+                        <span class="fw-semibold"><?php echo esc_html(count($results)); ?></span> results found
+                    </div>
+                <?php endif; ?>
                 <?php if (!empty($results)): ?>
                     <!-- Card Listing -->
                         <?php 
@@ -144,7 +148,7 @@
                                 $images = AuctionMarketplace\Shortcodes::get_car_images($car, $primary_image_url);
                                 $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
                                 $sale_date_str = AuctionMarketplace\Shortcodes::format_sale_date($car->sale_date);
-                                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->vin, $car->auction_name, $primary_image_url, $car->lot_number ?? null);
                                 
                                 $auction_status = ($remaining_str != "Expired") ? $car->status : 'inactive';
                                 $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($auction_status));

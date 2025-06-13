@@ -105,27 +105,6 @@
                                 >
                             <?php endforeach; ?>
                         </div>
-                        <script>
-                            // Highlight active thumbnail on carousel slide
-                            document.addEventListener('DOMContentLoaded', function() {
-                                var carousel = document.getElementById('<?php echo esc_js($carousel_id); ?>');
-                                if (!carousel) return;
-                                var thumbs = carousel.parentNode.querySelectorAll('.bitcx_amp_thumb_img');
-                                var bsCarousel = bootstrap.Carousel.getOrCreateInstance(carousel);
-                                carousel.addEventListener('slide.bs.carousel', function (e) {
-                                    thumbs.forEach(function(img, idx) {
-                                        img.classList.toggle('active', idx === e.to);
-                                    });
-                                });
-                                // Clicking a thumbnail also highlights it
-                                thumbs.forEach(function(img, idx) {
-                                    img.addEventListener('click', function() {
-                                        thumbs.forEach(function(i) { i.classList.remove('active'); });
-                                        img.classList.add('active');
-                                    });
-                                });
-                            });
-                        </script>
                     <?php endif; ?>
                 </div>
 
@@ -263,7 +242,7 @@
                                 $auction_name = strtoupper($vehicle->auction_name);
                                 
                                 $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($vehicle->sale_date);
-                                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($vehicle->auction_name, $primary_image_url, $vehicle->lot_number ?? null);
+                                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($vehicle->vin, $vehicle->auction_name, $primary_image_url, $vehicle->lot_number ?? null);
                                 $sale_date_str = AuctionMarketplace\Shortcodes::format_sale_date($vehicle->sale_date);
                                 
                                 $auction_status = ($remaining_str != "Expired") ? $vehicle->status : 'inactive';

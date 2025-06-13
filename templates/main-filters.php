@@ -68,14 +68,14 @@
           <div class="form-group">
             <select name="bid_range" id="bid_range" class="form-select bitcx_amp_filter_input select2-drop">
                 <option value="">Изберете Ценови диапазон</option>
-                <option value="$0-$1,000">$0 - $1,000</option>
+                <option value="$0-$1000">$0 - $1,000</option>
                 <option value="$1000-$5000">$1,000 - $5,000</option>
                 <option value="$5000-$10000">$5,000 - $10,000</option>
                 <option value="$10000-$15000">$10,000 - $15,000</option>
                 <option value="$15000-$25000">$15,000 - $25,000</option>
                 <option value="$25000-$50000">$25,000 - $50,000</option>
                 <option value="$50000-$100000">$50,000 - $100,000</option>
-                <option value="$100000+">Над $100,000</option>
+                <option value="$100000-$200000">Над $100,000</option>
             </select>
           </div>
         </div>

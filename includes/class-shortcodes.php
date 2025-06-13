@@ -44,6 +44,7 @@ class Shortcodes {
         $where = [];
         $params = [];
 
+        $copart_iaai = [];
         foreach ($_GET as $key => $value) {
             $safe_value = sanitize_text_field($value);
             $listing_params[$key] = $safe_value;
@@ -51,28 +52,47 @@ class Shortcodes {
             // Only allow certain columns to be filtered for security
             // If 'vin' is present, only filter by vin and ignore other filters
             if ($key === 'vin' && !empty($safe_value)) {
-                $where = ["vin = %s"];
+                $where = ["l.vin = %s"];
                 $params = [$safe_value];
                 break;
-            } elseif ($key === 'year_range' && !empty($safe_value)) {
-                // Expecting format: "YYYY-YYYY"
+            } elseif ($key === 'year_range') {
                 $years = explode('-', $safe_value);
                 if (count($years) == 2) {
-                    $where[] = "(year >= %d AND year <= %d)";
+                    $where[] = "(l.year >= %d AND l.year <= %d)";
                     $params[] = intval($years[0]);
                     $params[] = intval($years[1]);
                 }
-            } elseif ($key === 'bid_range' && !empty($safe_value)) {
-                // Expecting format: "min-max"
+            } elseif ($key === 'bid_range') {
                 $bids = explode('-', $safe_value);
                 if (count($bids) == 2) {
-                    $where[] = "(current_bid >= %d AND current_bid <= %d)";
+                    $where[] = "(l.crnt_bid_price >= %d AND l.crnt_bid_price <= %d)";
                     $params[] = intval($bids[0]);
                     $params[] = intval($bids[1]);
                 }
+            } elseif ($key == 'copart' || $key == 'iaai') {
+                if ($safe_value === '1') {
+                    $copart_iaai[] = strtoupper($key);
+                }
+            } elseif ($key == 'archived') {
+                if ($safe_value === '1') {
+                    $where[] = "l.status = %s";
+                    $params[] = "inactive";
+                }
+            } else {
                 $where[] = "$key = %s";
-            }else{
-                $where[] = "$key = %s";
+                $params[] = $safe_value;
+            }
+        }
+
+        if (!empty($copart_iaai)) {
+            // Remove any previous auction_name filter to avoid conflict
+            $where = array_filter($where, function($clause) {
+            return strpos($clause, 'l.auction_name') === false;
+            });
+            $placeholders = implode(',', array_fill(0, count($copart_iaai), '%s'));
+            $where[] = "l.auction_name IN ($placeholders)";
+            foreach ($copart_iaai as $auction) {
+            $params[] = $auction;
             }
         }
 
@@ -118,8 +138,6 @@ class Shortcodes {
         if (empty($vin)) return '<div class="alert alert-danger">Please Provide a VIN Number</div>';
 
         $atts = shortcode_atts(['vin' => ''], $vin);
-
-        log_debug("Rendering car detail for VIN: $vin");
 
         global $wpdb;
         $table = $wpdb->prefix . 'auction_listings';
@@ -179,8 +197,6 @@ class Shortcodes {
                 }, $related_vehicles);
             }
         }
-
-        // log_debug("Car details fetched: " . print_r($car, true)); // Debugging line
 
         ob_start();
         include plugin_dir_path(__DIR__) . '/templates/vehicle-details.php';
@@ -312,20 +328,22 @@ class Shortcodes {
      * @return string The URL of the auction lot
     */
 
-    public static function get_auction_link($auction_name, $primary_image_url = NULL, $lot_number = NULL){
+    public static function get_auction_link($vin, $auction_name, $primary_image_url = NULL, $lot_number = NULL){
         $vehicle_url = "";
         $auction_name = strtoupper($auction_name);
-        if (strpos($auction_name, 'COPART') !== false) {
-            $vehicle_url = 'https://www.copart.com/lot/' . $lot_number;
-        } else {
-            if ($primary_image_url != "") {
-                preg_match('/(\d+)~SID~/', $primary_image_url, $matches);
-                if (!empty($matches[1])) {
-                    $item_id = substr($matches[1], 1); // Remove first digit
-                    $vehicle_url = 'https://ca.iaai.com/Vehicles/VehicleDetails?itemid=' . $item_id;
-                }
-            }
-        }
+        // if (strpos($auction_name, 'COPART') !== false) {
+        //     $vehicle_url = 'https://www.copart.com/lot/' . $lot_number;
+        // } else {
+        //     if ($primary_image_url != "") {
+        //         preg_match('/(\d+)~SID~/', $primary_image_url, $matches);
+        //         if (!empty($matches[1])) {
+        //             $item_id = substr($matches[1], 1); // Remove first digit
+        //             $vehicle_url = 'https://ca.iaai.com/Vehicles/VehicleDetails?itemid=' . $item_id;
+        //         }
+        //     }
+        // }
+
+        $vehicle_url = add_query_arg(['vin' => $vin], site_url('vehicle-details'));
 
         return $vehicle_url;
     }
@@ -376,6 +394,7 @@ class Shortcodes {
     
         foreach ($filters as $key => $value) {
             $safe_value = sanitize_text_field($value);
+            // Only allow certain columns to be filtered for security
             if ($key === 'vin' && !empty($safe_value)) {
                 $where = ["l.vin = %s"];
                 $params = [$safe_value];
@@ -394,9 +413,31 @@ class Shortcodes {
                     $params[] = intval($bids[0]);
                     $params[] = intval($bids[1]);
                 }
+            } elseif ($key == 'copart' || $key == 'iaai') {
+                if ($safe_value === '1') {
+                    $copart_iaai[] = strtoupper($key);
+                }
+            } elseif ($key == 'archived') {
+                if ($safe_value === '1') {
+                    $where[] = "l.status = %s";
+                    $params[] = "inactive";
+                }
             } else {
-                $where[] = "l.$key = %s";
+                $where[] = "$key = %s";
                 $params[] = $safe_value;
+            }
+        }
+
+        // If copart or iaai filters are set, add them as OR condition
+        if (!empty($copart_iaai)) {
+            // Remove any previous auction_name filter to avoid conflict
+            $where = array_filter($where, function($clause) {
+            return strpos($clause, 'l.auction_name') === false;
+            });
+            $placeholders = implode(',', array_fill(0, count($copart_iaai), '%s'));
+            $where[] = "l.auction_name IN ($placeholders)";
+            foreach ($copart_iaai as $auction) {
+            $params[] = $auction;
             }
         }
     

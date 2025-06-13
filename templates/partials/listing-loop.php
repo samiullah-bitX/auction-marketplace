@@ -1,28 +1,26 @@
 <?php if (!empty($cars)): ?>
+    <?php if (!empty($cars)): ?>
+        <div class="mb-3">
+            <span class="fw-semibold"><?php echo esc_html($total); ?></span> results found
+        </div>
+    <?php endif; ?>
     <!-- Card Listing -->
         <?php 
             // error_log("Results: " . print_r($results, true));
             foreach ($cars as $key => $car) { 
                 $car_title = esc_html($car->make . ' ' . $car->model . ' ' . $car->year);
                 $primary_image_url = $car->primary_image_url ?? "https://placehold.co/845x633?text=Image+not+Available";
-                $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
                 $auction_name = strtoupper($car->auction_name);
                 
-                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
+                $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->vin, $car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                $sale_date_str = AuctionMarketplace\Shortcodes::format_sale_date($car->sale_date);
+                $images = AuctionMarketplace\Shortcodes::get_car_images($car, $primary_image_url);
                 
                 $auction_status = ($remaining_str != "Expired") ? $car->status : 'inactive';
                 $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($auction_status));
                 $classes = trim($classes);
-
-                $sale_date_str = 'N/A';
-                if ($car->sale_date) {
-                    if (is_numeric($car->sale_date) && strlen($car->sale_date) > 10) {
-                        $car->sale_date = intval($car->sale_date / 1000);
-                    }
-                    $sale_date_str = date('M d, Y H:i', $car->sale_date);
-                }
-
-                $images = AuctionMarketplace\Shortcodes::get_car_images($car, $primary_image_url);
+                
                 $carousel_id = 'carCarousel_' . md5($car->vin . $car->lot_number);
                 $isCopart = str_contains(strtolower($car->auction_name), 'copart');
                 // Convert miles to kilometers for Copart vehicles
