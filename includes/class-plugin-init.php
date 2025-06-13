@@ -87,17 +87,17 @@ class Plugin_Init {
     
     public function handle_cron_event() {
         $job = new Sync_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     public function handle_engine_sync_event() {
         $job = new Engine_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     public function handle_image_sync_event() {
         $job = new Image_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     // public function handle_status_sync_event() {

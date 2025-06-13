@@ -85,7 +85,8 @@ function vehicle_auction_enqueue_assets() {
 
     wp_localize_script('vehicle-auction-script', 'carAuctionAjax', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('vehicle-auction-nonce')
+        'nonce' => wp_create_nonce('vehicle-auction-nonce'),
+        'pagination_nonce' => wp_create_nonce('vehicle-pagination-nonce')
     ));
 }
 

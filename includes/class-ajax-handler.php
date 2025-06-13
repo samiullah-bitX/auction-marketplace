@@ -13,6 +13,8 @@ class Ajax_Handler {
         add_action('wp_ajax_nopriv_filter_auctions', [self::class, 'filter_auctions']);
         add_action('wp_ajax_get_vehicle_model_by_make', [self::class, 'get_vehicle_model_by_make_id']);
         add_action('wp_ajax_nopriv_get_vehicle_model_by_make', [self::class, 'get_vehicle_model_by_make_id']);
+        add_action('wp_ajax_paginate_auctions', [self::class, 'paginate']);
+        add_action('wp_ajax_nopriv_paginate_auctions', [self::class, 'paginate']);
     }
 
     public static function filter_auctions() {
@@ -109,5 +111,34 @@ class Ajax_Handler {
             return $data;
         }
 
+    }
+
+    /**
+     * Handles pagination for auction listings.
+     * @return void
+     */
+
+    public static function paginate() {
+        check_ajax_referer('vehicle-pagination-nonce');
+    
+        $filters = $_POST['filters'] ?? [];
+        $page = intval($_POST['page'] ?? 1);
+    
+        $result = \AuctionMarketplace\Shortcodes::fetch_filtered_listings($filters, $page);
+        // error_log("Result: ".print_r($result, true)); // Debugging line
+        $cars = $result['data'];
+        $total = $result['total'];
+        $per_page = 10;
+        $pages = ceil($total / $per_page);
+
+        ob_start();
+        include plugin_dir_path(__DIR__) . 'templates/partials/listing-loop.php';
+        $html = ob_get_clean();
+    
+        wp_send_json_success([
+            'html' => $html,
+            'total_pages' => $pages,
+            'current_page' => $page
+        ]);
     }
 }

@@ -3,7 +3,6 @@ jQuery(document).ready(function($) {
     const validationMessage = $('#phone-validation-message');
     const phoneInput = $('#user_phone');
     
-
     let ajaxURL = carAuctionAjax.ajaxurl;
 
     // Handle form submission
@@ -182,6 +181,29 @@ jQuery(document).ready(function($) {
         setTimeout(function(){ x.className = x.className.replace(classes, ""); }, 3000);
     }
 
+    function loadPage(page, filters) {
+        $.post(ajaxURL, {
+            action: 'paginate_auctions',
+            filters: filters,
+            page: page,
+            _ajax_nonce: carAuctionAjax.pagination_nonce
+        }, function(response) {
+            if (response.success) {
+                $('#listing-results').html(response.data.html);
+                updatePagination(response.data.total_pages, response.data.current_page);
+            }
+        });
+    }
+
+    function updatePagination(totalPages, currentPage) {
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const active = (i === currentPage) ? 'active' : '';
+            html += `<button class="page-btn ${active}" data-page="${i}">${i}</button>`;
+        }
+        $('#pagination-controls').html(html);
+    }
+
     // Add event listener for country code changes
     $('#country_code').on('change', function() {
         phoneInput.val('');
@@ -238,4 +260,48 @@ jQuery(document).ready(function($) {
         const queryString = queryParams.join('&');
         window.location.href = `auction-filters?${queryString}`;
     });
+
+    $(document).on('click', '.page-btn', function() {
+        const page = $(this).data('page');
+        const filters = {};
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.forEach((value, key) => {
+            filters[key] = value;
+        });
+        loadPage(page, filters);
+    });
+
+    // Only run pagination code on the auction-filters page
+    if (window.location.pathname.includes('auction-filters')) {
+        const initialFilters = {};
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.forEach((value, key) => {
+            initialFilters[key] = value;
+        });
+
+        loadPage(1, initialFilters);
+    }
+
+    // Updated the JavaScript code to use a unique selector for the carousel to avoid affecting other carousels on different templates
+
+    var specificCarousel = document.querySelector('.vehicle-details-carousel .carousel'); // Use a unique selector
+    if (specificCarousel) {
+        var thumbs = specificCarousel.parentNode.querySelectorAll('.bitcx_amp_thumb_img');
+        var bsCarousel = bootstrap.Carousel.getOrCreateInstance(specificCarousel);
+        specificCarousel.addEventListener('slide.bs.carousel', function (e) {
+            thumbs.forEach(function(img, idx) {
+                img.classList.toggle('active', idx === e.to);
+            });
+        });
+        // Clicking a thumbnail also highlights it
+        thumbs.forEach(function(img, idx) {
+            img.addEventListener('click', function() {
+                thumbs.forEach(function(i) { i.classList.remove('active'); });
+                img.classList.add('active');
+            });
+        });
+    }
+    
 });
+
+    

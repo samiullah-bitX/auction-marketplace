@@ -12,40 +12,15 @@
                 foreach ($results as $car): 
                     $car_title = esc_html($car->make . ' ' . $car->model . ' ' . $car->year);
                     $primary_image_url = $car->primary_image_url ?? "https://placehold.co/845x633?text=Image+not+Available";
+                    $auction_name = strtoupper($car->auction_name);
                     
-                    // Calculate remaining time
-                    $now = time(); // current time in seconds
-                    $future = intval($car->sale_date / 1000); // convert ms to s
-                    $diff = $future - $now;
-
-                    if ($diff <= 0){
-                        $remaining_str = "Expired";
-                    }else{
-                        $days    = floor($diff / 86400);
-                        $hours   = floor(($diff % 86400) / 3600);
-                        $minutes = floor(($diff % 3600) / 60);
-                        $seconds = $diff % 60;
-                        $remaining_str = "{$days}D {$hours}h {$minutes}m";
-                    };
-
-                    $auction_status = ($diff > 0) ? $car->status : 'inactive';
+                    $remaining_str = AuctionMarketplace\Shortcodes::get_remaining_time($car->sale_date);
+                    $vehicle_url = AuctionMarketplace\Shortcodes::get_auction_link($car->auction_name, $primary_image_url, $car->lot_number ?? null);
+                    $sale_date_str = AuctionMarketplace\Shortcodes::format_sale_date($car->sale_date);
+                    
+                    $auction_status = ($remaining_str != "Expired") ? $car->status : 'inactive';
                     $classes = strtolower(esc_attr($car->auction_name)) . ' ' . strtolower(esc_attr($auction_status));
                     $classes = trim($classes);
-
-                    $vehicle_url = "";
-                                        
-                    $auction_name = strtoupper($car->auction_name);
-                    if (strpos($auction_name, 'COPART') !== false) {
-                        $vehicle_url = 'https://www.copart.com/lot/' . $car->lot_number;
-                    } else {
-                        if ($primary_image_url != "") {
-                            preg_match('/(\d+)~SID~/', $primary_image_url, $matches);
-                            if (!empty($matches[1])) {
-                                $item_id = substr($matches[1], 1); // Remove first digit
-                                $vehicle_url = 'https://ca.iaai.com/Vehicles/VehicleDetails?itemid=' . $item_id;
-                            }
-                        }
-                    }
 
                 ?>
                     <div class="col-md-6 col-lg-4">

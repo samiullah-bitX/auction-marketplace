@@ -316,6 +316,42 @@
     color: green;
 }
 
+.bitcx_amp_car_card .carousel button.carousel-control-prev,
+.bitcx_amp_car_card .carousel button.carousel-control-next{
+    width: 35px;
+    height: 35px;
+    padding: 0px;
+    border: none;
+    background: #dc3545;
+}
+
+.bitcx_amp_car_card .carousel button.carousel-control-prev span,
+.bitcx_amp_car_card .carousel button.carousel-control-next span{
+    width: 16px;
+}
+
+.car-details-wrapper .carousel-nav{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+}
+
+.car-details-wrapper button.carousel-control-prev,
+.car-details-wrapper button.carousel-control-next{
+    height: 50px;
+    width: 50px;
+    line-height: 55px;
+    padding: 0px;
+    background: #c36;
+}
+
+.car-details-wrapper button.carousel-control-prev span,
+.car-details-wrapper button.carousel-control-next span{
+    width: 20px;
+    height: 20px;
+}
+
 @media (min-width: 1200px) {
     .auction-wrapper .container {
         max-width: 1140px;
