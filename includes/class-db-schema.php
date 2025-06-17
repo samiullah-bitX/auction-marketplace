@@ -51,6 +51,8 @@ class DB_Schema {
             raw_json JSON NULL,
             engine_json JSON NULL,
             image_json JSON NULL,
+            s3_image_keys JSON NULL,
+            s3_synced TINYINT(1) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY vin (vin)

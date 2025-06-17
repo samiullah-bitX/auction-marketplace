@@ -92,7 +92,7 @@
                         <?php endif; ?>
                     </div>
                     <?php if (count($images) > 1): ?>
-                        <div class="bitcx_amp_thumb_gallery mt-3 d-flex justify-content-center gap-2">
+                        <div class="bitcx_amp_thumb_gallery mt-3 gap-2">
                             <?php foreach ($images as $idx => $img_url): ?>
                                 <img 
                                     src="<?php echo esc_url($img_url); ?>" 

@@ -1,12 +1,12 @@
 <!-- listing-container  -->
-<div class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-white rounded border">
+<div class="container mt-3 px-0">
+    <div class="d-flex tags-manager justify-content-between align-items-center px-3 py-2 bg-white rounded border">
         
         <!-- Active Filter Chip -->
         <?php if (!empty($listing_params)): ?>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <?php foreach ($listing_params as $key => $value): ?>
-                    <span class="badge rounded-pill bg-light text-dark px-3 py-2 d-flex align-items-center">
+                    <span class="badge rounded-pill  text-dark px-3 py-2 d-flex align-items-center">
                         <?php
                             $label = str_replace(['-', '_'], ' ', $key);
                             $label = ucwords($label);
@@ -37,10 +37,10 @@
     </div>
 </div>
 
-<div class="container py-4">
+<div class="container py-4 px-0">
     <div class="row">
         <!-- Left Filter Sidebar -->
-        <div class="col-md-12 col-lg-3">
+        <div class="col-md-12 col-lg-3 pe-lg-0">
             <div class="card bitcx_amp_filter_box">
                 <div class="card-body">
                     <h5 class="card-title fw-semibold">Filters</h5>
@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- Auction Type -->
-                    <div class="mb-4">
+                    <div class="mb-4 auction-type">
                         <label class="fw-semibold">Auction Type</label>
                         <div class="d-flex gap-2 mt-2">
                             <button class="btn btn-light rounded-pill px-3 bitcx_amp_filter_tab active">All</button>
@@ -81,47 +81,47 @@
                     </div>
 
                     <!-- Start Code -->
-                    <div class="mb-4">
-                        <h6>Start code</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Stationary / No information</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Vehicle starts</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Run and Drive</button>
+                    <div class="mb-4 filter-btns">
+                        <h6 class="mb-1">Start code</h6>
+                        <div class="d-flex flex-wrap gap-2 ">
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Stationary / No information</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Vehicle starts</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Run and Drive</button>
                         </div>
                     </div>
 
                     <!-- Drive Type -->
-                    <div class="mb-4">
-                        <h6>Drive Type</h6>
+                    <div class="mb-4 filter-btns">
+                        <h6 class="mb-1">Drive Type</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">FWD Front wheel drive</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">RWD Rear wheel drive</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">AWD All wheel drive</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">FWD Front wheel drive</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">RWD Rear wheel drive</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">AWD All wheel drive</button>
                         </div>
                     </div>
 
                     <!-- Transmission -->
-                    <div class="mb-4">
-                        <h6>Transmission</h6>
+                    <div class="mb-4 filter-btns">
+                        <h6 class="mb-1">Transmission</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-sm bitcx_amp_filter_tab">All</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">A Automatic</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">M Manual</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">All</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">A Automatic</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">M Manual</button>
                         </div>
                     </div>
 
                     <!-- Body Style -->
-                    <div class="mb-4">
-                        <h6>Body Style</h6>
+                    <div class="mb-4 filter-btns">
+                        <h6 class="mb-1">Body Style</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-sm bitcx_amp_filter_tab active">All</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Sedan</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">SUV</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Coupe</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">Pickup</button>
-                            <button class="btn btn-sm bitcx_amp_filter_tab">See more</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab active">All</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Sedan</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">SUV</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Coupe</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">Pickup</button>
+                            <button class="btn btn-sm rounded-pill bitcx_amp_filter_tab">See more</button>
                         </div>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                                 }
                                 
                         ?>                        
-                            <div class="card bitcx_amp_car_card vehicle-details-carousel p-3 mb-4 <?php echo $classes; ?>">
+                            <div class="card bitcx_amp_car_card vehicle-details-carousel  p-3 mb-4 <?php echo $classes; ?>">
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <div id="<?php echo esc_attr($carousel_id); ?>" class="carousel slide" data-bs-ride="carousel">
@@ -186,19 +186,23 @@
                                         </div>
                                     </div>
                                     <div class="col-md-5">
-                                        <h5><a href="<?php echo esc_url($vehicle_url); ?>"><?php echo esc_attr($car_title); ?></a></h5>
-                                        <p class="text-muted small mb-1">• <?php echo esc_attr($car->vin); ?> • <?php echo esc_attr($car->lot_number); ?></p>
+                                        <h5 class="d-flex align-items-center">
+                                            <a href="<?php echo esc_url($vehicle_url); ?>"><?php echo esc_attr($car_title); ?></a>
+                                            <p class="text-muted small mb-1">• <?php echo esc_attr($car->vin); ?> • <?php echo esc_attr($car->lot_number); ?></p>
+
+                                        </h5>
+                                        <div class="extra-information"><div class="specs"><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Key Present"><img src="https://bid.cars/img/upd/icons/key.svg" width="20" height="20" alt="Key Present"></span><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Automatic"><img src="https://bid.cars/img/upd/icons/automatics.svg" width="18" height="19" alt="Automatic"></span><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Gasoline"><img src="https://bid.cars/img/upd/icons/patrol.svg" width="15" height="18" alt="Gasoline"></span><span class="drive-type" data-toggle="tooltip" data-placement="top" title="" data-original-title="Front wheel drive"><img src="https://bid.cars/img/upd/icons/fwd.svg" width="15" height="18" alt="Front wheel drive"></span><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Engine size, type, horsepower">1.5L</span><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Engine size, type, horsepower">I4</span><span data-toggle="tooltip" data-placement="top" title="" data-original-title="Engine size, type, horsepower">200HP</span></div></div>
                                         <!-- <div class="d-flex gap-2 align-items-center mb-2">
                                             <span class="badge bg-light text-secondary border"><i class="bi bi-key"></i></span>
                                             <span class="badge bg-light text-secondary border"><i class="bi bi-file-earmark-text"></i></span>
                                         </div> -->
-                                        <div class="row text-muted small">
-                                            <div class="col-6">Odometer [km]: <span class="text-dark"><?php echo esc_attr($odometer_value ?? "N/A"); ?></span></div>
-                                            <div class="col-6">Seller: <span class="text-dark"><?php echo ($car->seller ? esc_attr($car->seller) : "N/A"); ?></span></div>
-                                            <div class="col-6">Location: <span class="text-dark"><?php echo esc_attr($car->location); ?></span></div>
-                                            <div class="col-6">Damage: <span class="text-dark"><?php echo esc_attr($car->primary_damage); ?></span></div>
-                                            <div class="col-6">Sale doc: <span class="text-dark"><?php echo esc_attr(($car->raw_json != NULL) ? $car->raw_json["doc_type"] : "N/A") ?></span></div>
-                                            <div class="col-6">Status: <span class="text-warning fw-medium"><?php echo esc_attr($auction_status); ?></span></div>
+                                        <div class="row text-muted small item-info">
+                                            <div class="col-6 vstack">Odometer [km]: <span class="text-dark"><?php echo esc_attr($odometer_value ?? "N/A"); ?></span></div>
+                                            <div class="col-6 vstack">Seller: <span class="text-dark"><?php echo ($car->seller ? esc_attr($car->seller) : "N/A"); ?></span></div>
+                                            <div class="col-6 vstack">Location: <span class="text-dark"><?php echo esc_attr($car->location); ?></span></div>
+                                            <div class="col-6 vstack">Damage: <span class="text-dark"><?php echo esc_attr($car->primary_damage); ?></span></div>
+                                            <div class="col-6 vstack">Sale doc: <span class="text-dark"><?php echo esc_attr(($car->raw_json != NULL) ? $car->raw_json["doc_type"] : "N/A") ?></span></div>
+                                            <div class="col-6 vstack">Status: <span class="text-warning fw-medium"><?php echo esc_attr($auction_status); ?></span></div>
                                         </div>
                                     </div>
                                     <div class="col-md-3 text-end d-flex flex-column justify-content-between">

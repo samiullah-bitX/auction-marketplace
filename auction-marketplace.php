@@ -19,12 +19,9 @@ use AuctionMarketplace\Plugin_Init;
 use AuctionMarketplace\DB_Schema;
 use AuctionMarketplace\Sync_Job;
 
-// Define plugin constants
-define('AUCTION_API_TOKEN', "96ded80c2a9dfb9fe007f4d77526f5b891609497aef159ac3ff0f8a9aa28ba2f");
-define('AUCTION_BASE_URL_V1', "https://copart-iaai-api.com/api/v1");
-define('AUCTION_BASE_URL_V2', "https://copart-iaai-api.com/api/v2");
 // Load autoloader
 require_once plugin_dir_path(__FILE__) . 'includes/class-autoloader.php';
+require_once plugin_dir_path(__FILE__) . '/vendor/autoload.php';
 require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
 // Enqueue scripts and styles

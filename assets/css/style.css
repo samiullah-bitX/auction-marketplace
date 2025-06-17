@@ -1,7 +1,7 @@
 /* Grid System */
 
 .auction-wrapper .hide {
-	display: none !important;
+    display: none !important;
 }
 
 .auction-wrapper .row {
@@ -43,7 +43,7 @@
     transition: all .3s;
 }
 
-.auction-wrapper label .checkbox-field-wrapper input{
+.auction-wrapper label .checkbox-field-wrapper input {
     width: auto;
 }
 
@@ -242,11 +242,11 @@
     margin-left: auto;
 }
 
-.auction-wrapper .phone-input-group{
-    display: flex;;
+.auction-wrapper .phone-input-group {
+    display: flex;
 }
 
-.auction-wrapper .phone-input-group .select2-container{
+.auction-wrapper .phone-input-group .select2-container {
     max-width: 80px;
     margin-right: .5rem;
 }
@@ -267,11 +267,11 @@
     font-size: 18px;
 }
 
-.card.bitcx_amp_card .bitcx_amp_card_title a{
+.card.bitcx_amp_card .bitcx_amp_card_title a {
     text-decoration: none;
 }
 
-.card.bitcx_amp_card .bitcx_amp_card_subtitle{
+.card.bitcx_amp_card .bitcx_amp_card_subtitle {
     display: flex;
     column-gap: 1rem;
 }
@@ -317,7 +317,7 @@
 }
 
 .bitcx_amp_car_card .carousel button.carousel-control-prev,
-.bitcx_amp_car_card .carousel button.carousel-control-next{
+.bitcx_amp_car_card .carousel button.carousel-control-next {
     width: 35px;
     height: 35px;
     padding: 0px;
@@ -326,19 +326,26 @@
 }
 
 .bitcx_amp_car_card .carousel button.carousel-control-prev span,
-.bitcx_amp_car_card .carousel button.carousel-control-next span{
+.bitcx_amp_car_card .carousel button.carousel-control-next span {
     width: 16px;
 }
 
-.car-details-wrapper .carousel-nav{
+.car-details-wrapper .carousel-nav {
     position: absolute;
     top: 50%;
     width: 100%;
     transform: translateY(-50%);
 }
 
+.car-details-wrapper .bitcx_amp_thumb_gallery img {
+    margin-bottom: .35rem;
+    margin-right: .35rem;
+    display: inline-block;
+    margin-left: 0px;
+}
+
 .car-details-wrapper button.carousel-control-prev,
-.car-details-wrapper button.carousel-control-next{
+.car-details-wrapper button.carousel-control-next {
     height: 50px;
     width: 50px;
     line-height: 55px;
@@ -347,7 +354,7 @@
 }
 
 .car-details-wrapper button.carousel-control-prev span,
-.car-details-wrapper button.carousel-control-next span{
+.car-details-wrapper button.carousel-control-next span {
     width: 20px;
     height: 20px;
 }
@@ -362,8 +369,147 @@
     .auction-wrapper .form-group {
         width: 100%;
     }
-	
-	formh5{
-		font-size: 16px;
-	}
+
+    formh5 {
+        font-size: 16px;
+    }
+}
+
+.grid-container {
+    max-width: 1320px !important;
+}
+
+.grid-container .e-con-inner {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-inline: 0;
+}
+
+.grid-container .elementor-element {
+    padding-inline: 0;
+}
+
+.form-control {
+    padding: .375rem .75rem !important;
+    color: var(--bs-body-color) !important;
+    background-color: var(--bs-body-bg) !important;
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+}
+
+.filter-btns .bitcx_amp_filter_tab {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 6px 15px;
+    font-weight: 500;
+    color: #333 !important;
+    border-radius: 4px;
+    transition: 0.3s ease;
+}
+
+.filter-btns .bitcx_amp_filter_tab:hover {
+    color: black !important
+}
+
+.tags-manager .btn-close {
+    font-size: 6px !important;
+    height: 12px;
+    width: 12px;
+    background-color: grey;
+    border-radius: 50%;
+    filter: invert(1);
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+    /* optional: to ensure visibility above carousel content */
+}
+
+.carousel:hover .carousel-control-next,
+.carousel:hover .carousel-control-prev {
+    opacity: 0.6;
+}
+
+.filter-btns .bitcx_amp_filter_tab {
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.filter-btns .bitcx_amp_filter_tab::after {
+    background-image: url('data:image/svg+xml,<svg width="9" height="7" viewBox="0 0 9 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.41681 4.97446L1.6331 3.19076L0.867188 3.95667L3.41681 6.5063L8.67477 1.24834L7.90885 0.482422L3.41681 4.97446Z" fill="white"/></svg>');
+    background-color: #7F8FA4B0;
+    content: '';
+    width: 14px;
+    height: 14px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+    margin-left: 5px;
+    background-size: 8px;
+}
+
+.tags-manager .badge {
+    background-color: #E9EDF0 !important;
+}
+
+.auction-type button {
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 15px;
+}
+
+.item-info {
+    font-size: 14px !important;
+    position: relative;
+}
+
+.item-info::after {
+    content: "";
+    height: 70%;
+    width: 1px;
+    background-color: black;
+    position: absolute;
+    /* top: 50%; */
+    /* transform: translateY(-50%); */
+    right: 8px;
+    bottom: 0;
+    opacity: 0.6;
+}
+
+.extra-information {
+    background: #f5f6f8;
+    padding: 4px 11px;
+    border-radius: 6px;
+    display: table;
+    margin-bottom: 9px;
+}
+
+.specs {
+    font-size: 12px;
+    color: #7F8FA4;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.item-info h5 p {
+    font-size: 12px !important;
+    margin-bottom: 0 !important;
+    margin-left: 5px;
+}
+
+.item-info h5 a {
+    font-size: 17px !important;
 }

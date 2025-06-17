@@ -11,6 +11,7 @@
             <?php 
                 foreach ($results as $car): 
                     $car_title = esc_html($car->make . ' ' . $car->model . ' ' . $car->year);
+                    $car_primary_url = esc_url($car->primary_image_url);
                     $primary_image_url = $car->primary_image_url ?? "https://placehold.co/845x633?text=Image+not+Available";
                     $auction_name = strtoupper($car->auction_name);
                     
@@ -35,7 +36,7 @@
                                     <span class="status"><?php echo ucfirst(esc_attr($auction_status)); ?></span>
                                 </p>
                                 <div class="bitcx_amp_timer mb-2">
-                                    Ends in: <span class="bitcx_amp_time"><?php echo $remaining_str; ?></span>
+                                    <span class="bitcx_amp_time"><?php echo $remaining_str . (($remaining_str != "Expired") ? " (Time Left) " : " "); ?></span>
                                 </div>
                                 <div class="d-flex justify-content-between bid_price">
                                     <span class="bitcx_amp_price crnt_bid">Current Bid: <b><?php echo '$'.esc_attr($car->crnt_bid_price ?? 0) ?></b></span>

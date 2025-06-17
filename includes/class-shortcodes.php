@@ -102,7 +102,7 @@ class Shortcodes {
         }
 
         // Join with wp_auction_raw to get additional data (e.g., raw_json)
-        $query = "SELECT l.*, r.raw_json, r.engine_json, r.image_json 
+        $query = "SELECT l.*, r.* 
               FROM $table l 
               LEFT JOIN $raw_table r ON l.vin = r.vin 
               $where_sql 
@@ -145,7 +145,7 @@ class Shortcodes {
 
         $car = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT l.*, r.raw_json, r.engine_json, r.image_json 
+                "SELECT l.*, r.* 
                 FROM $table l 
                 LEFT JOIN $raw_table r ON l.vin = r.vin 
                 WHERE l.vin = %s 
@@ -254,7 +254,7 @@ class Shortcodes {
             "23" => "KIA",
             "50" => "LAMBORGHINI",
             "5938" => "LANCIA",
-            "36" => "LAND ROVER",
+            // "36" => "LAND ROVER",
             "34" => "LEXUS",
             "25" => "LINCOLN",
             "57" => "LOTUS",
@@ -273,7 +273,7 @@ class Shortcodes {
             "17" => "PONTIAC",
             "30" => "PORSCHE",
             "70882" => "ROLLS-ROYCE",
-            "36" => "ROVER",
+            // "36" => "ROVER",
             "40" => "SAAB",
             "45" => "SMART",
             "15" => "SUBARU",
@@ -355,19 +355,40 @@ class Shortcodes {
      * @throws \Exception If the date format is invalid
     */
 
-    public static function get_car_images($car){
+    public static function get_car_images($car, $primary_image_url) {
         $max_images = 6; // Maximum number of images to return
         $images = [];
-        if (
-            isset($car->image_json['result'][0]['car_photo']['photo']) &&
-            is_array($car->image_json['result'][0]['car_photo']['photo'])
-        ) {
+
+        // Primary: Use s3_image_keys if available
+        if (!empty($car->s3_image_keys)) {
+            // Assume s3_image_keys is a JSON array or comma-separated string
+            $keys = is_array($car->s3_image_keys)
+                ? $car->s3_image_keys
+                : json_decode($car->s3_image_keys, true);
+
+            if (!is_array($keys)) {
+                // Try comma-separated fallback
+                $keys = explode(',', $car->s3_image_keys);
+            }
+
+            $cloudfront_url = defined('AUCTION_CLF_URL') ? AUCTION_CLF_URL : '';
+            foreach ($keys as $key) {
+                $key = trim($key);
+                if ($key) {
+                    $images[] = rtrim($cloudfront_url, '/') . '/' . ltrim($key, '/');
+                    if (count($images) >= $max_images) break;
+                }
+            }
+        }
+
+        // Fallback: Use image_json photos if s3_image_keys is empty
+        if (empty($images) && isset($car->image_json['result'][0]['car_photo']['photo']) && is_array($car->image_json['result'][0]['car_photo']['photo'])) {
             $images = $car->image_json['result'][0]['car_photo']['photo'];
             $images = array_slice($images, 0, $max_images);
         }
 
-        // Fallback to primary image if no images found
-        if (empty($images)) {
+        // Fallback: Use primary image URL if still empty
+        if (empty($images) && $primary_image_url) {
             $images[] = $primary_image_url;
         }
 
@@ -446,7 +467,7 @@ class Shortcodes {
         $offset = ($page - 1) * $per_page;
     
         $sql = "
-            SELECT SQL_CALC_FOUND_ROWS l.*, r.raw_json, r.engine_json, r.image_json
+            SELECT SQL_CALC_FOUND_ROWS l.*, r.*
             FROM $table l
             LEFT JOIN $raw_table r ON l.vin = r.vin
             $where_sql
@@ -494,6 +515,91 @@ class Shortcodes {
         }
 
         return $sale_date_str;
+    }
+
+
+    /**
+     * Get the icon image path for a given drive type.
+     *
+     * @param string $drive_type The drive type string (e.g., 'FWD', 'AWD', etc.)
+     * @return string|null The icon image path or null if not found
+     */
+    public static function get_drive_icon($drive_type) {
+        $drive_type = strtolower(trim($drive_type));
+        $drive_icon_map = [
+            'fwd' => 'fwd.svg',
+            'front wheel drive' => 'fwd.svg',
+            'front-wheel drive' => 'fwd.svg',
+            'rwd' => 'rwd.svg',
+            'rear wheel drive' => 'rwd.svg',
+            'rear-wheel drive' => 'rwd.svg',
+            'awd' => 'awd.svg',
+            '4wd' => 'awd.svg',
+            'all wheel drive' => 'awd.svg',
+        ];
+        return $drive_icon_map[$drive_type] ?? "fwd.svg";
+    }
+
+    /**
+     * Get the icon image path for a given transmission type.
+     *
+     * @param string $transmission_type The transmission type string (e.g., 'FWD', 'AWD', etc.)
+     * @return string|null The icon image path or null if not found
+     */
+    public static function get_tranmission_icon($tranmission_type) {
+        $tranmission_type = strtolower(trim($tranmission_type));
+        $tranmission_icon_map = [
+            'automatic' => 'automatics.svg',
+            'auto' => 'automatics.svg',
+            'manual' => 'manual.svg',
+            // 'cvt' => 'cvt.svg',
+            // 'continuously variable' => 'cvt.svg',
+            // 'semi-automatic' => 'semi-automatic.svg',
+            // 'semi automatic' => 'semi-automatic.svg',
+            // 'tiptronic' => 'tiptronic.svg',
+            // 'dual clutch' => 'dual-clutch.svg',
+            // 'dct' => 'dual-clutch.svg',
+        ];
+        return $tranmission_icon_map[$tranmission_type] ?? "automatics.svg";
+    }
+
+    /**
+     * Get the icon image path for a given key type.
+     *
+     * @param string $key_type The key type string (e.g., 'present', 'missing', etc.)
+     * @return string|null The icon image path or null if not found
+     */
+    public static function get_key_icon($key_type) {
+        $key_type = strtolower(trim($key_type));
+        $key_icon_map = [
+            'present' => 'key.svg',
+            'yes' => 'key.svg',
+            'available' => 'key.svg',
+            'missing' => 'nokey.svg',
+            'no' => 'nokey.svg',
+            'not available' => 'nokey.svg',
+        ];
+        return $key_icon_map[$key_type] ?? "nokey.svg";
+    }
+
+    /**
+     * Get the icon image path for a given fuel type.
+     *
+     * @param string $fuel_type The fuel type string (e.g., 'gasoline', 'diesel', etc.)
+     * @return string The icon image path or a default if not found
+     */
+    public static function get_fuel_icon($fuel_type) {
+        $fuel_type = strtolower(trim($fuel_type));
+        $fuel_icon_map = [
+            'gas' => 'patrol.svg',
+            'petrol' => 'patrol.svg',
+            'diesel' => 'diesel.svg',
+            'electric' => 'electro.svg',
+            'hybrid' => 'fuel-hybrid.svg',
+            'cng' => 'fuel-cng.svg',
+            'lpg' => 'fuel-lpg.svg',
+        ];
+        return $fuel_icon_map[$fuel_type] ?? "fuel-gasoline.svg";
     }
     
 }

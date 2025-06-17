@@ -123,6 +123,21 @@ Templates are located in:
 - `/templates/listings.php`
 - `/templates/detail.php`
 
+## AWS S3 Image Upload
+
+The plugin uses the AWS PHP SDK to upload car photos to Amazon S3.
+
+- Bucket: defined via `AUCTION_S3_BUCKET`
+- Keys: stored in `s3_image_keys` (JSON) in `wp_auction_raw`
+- Photos uploaded to folders named after each VIN
+
+### Config (add to `wp-config.php`):
+
+```php
+define('AUCTION_S3_KEY', 'your-key');
+define('AUCTION_S3_SECRET', 'your-secret');
+define('AUCTION_S3_BUCKET', 'your-bucket');
+define('AUCTION_S3_REGION', 'us-east-1');
 
 ## Roadmap
 

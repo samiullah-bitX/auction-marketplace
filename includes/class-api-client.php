@@ -37,7 +37,7 @@ class API_Client {
                     'IAAI CANADA'
                 ],
                 'without_sale_date' => 0,
-                'auction_date_from' => date('Y-m-d', strtotime('+1 day')), // Set to one day ahead if not defined
+                'auction_date_from' => date('Y-m-d', strtotime('+2 day')), // Set to one day ahead if not defined
             ];
             // Only set defaults if not already set
             foreach ($defaults as $key => $value) {
@@ -72,6 +72,8 @@ class API_Client {
                 return null;
             }
 
+            // log_debug("API Response: " . json_encode($response));
+
             $body = wp_remote_retrieve_body($response);
             $data = json_decode($body, true);
 
@@ -79,6 +81,8 @@ class API_Client {
                 log_debug('JSON Error: ' . json_last_error_msg());
                 return null;
             }
+
+            // log_debug("API Response Data: " . json_encode($data));
 
             return $data;
         } catch (\Throwable $e) {
