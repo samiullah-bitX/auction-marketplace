@@ -24,6 +24,7 @@ class Plugin_Init {
         add_action('auction_cron_event', [$this, 'handle_cron_event']);
         add_action('engine_sync_event', [$this, 'handle_engine_sync_event']);
         add_action('image_sync_event', [$this, 'handle_image_sync_event']);
+        add_action('s3_sync_event', [$this, 'handle_s3_sync_event']);
         // add_action('status_sync_event', [$this, 'handle_status_sync_event']);
         
         // add_action('engine_sync_event', function () {
@@ -59,6 +60,10 @@ class Plugin_Init {
         //     wp_schedule_event(time(), 'every_2_minutes', 'status_sync_event');
         // }
 
+        if (!wp_next_scheduled('s3_sync_event')) {
+            wp_schedule_event(time(), 'every_2_minutes', 's3_sync_event');
+        }
+
     }
 
     public function add_custom_cron_interval($schedules): array {
@@ -87,12 +92,12 @@ class Plugin_Init {
     
     public function handle_cron_event() {
         $job = new Sync_Job();
-        // $job->run(); // Optional: add filters here
+        $job->run(); // Optional: add filters here
     }
 
     public function handle_engine_sync_event() {
         $job = new Engine_Job();
-        // $job->run(); // Optional: add filters here
+        $job->run(); // Optional: add filters here
     }
 
     public function handle_image_sync_event() {
@@ -104,6 +109,11 @@ class Plugin_Init {
     //     $job = new Status_Job();
     //     $job->run(); // Optional: add filters here
     // }
+
+    public function handle_s3_sync_event() {
+        $job = new S3_Sync_Job();
+        $job->run();
+    }
 
     public static function inject_footer_code() {
         ?>

@@ -23,17 +23,8 @@ class Image_Job {
 
             $wpdb->update($raw_table, [
                 'image_json' => wp_json_encode($image_data),
-                's3_image_keys'  => wp_json_encode($uploaded_keys),
                 'updated_at' => current_time('mysql')
             ], ['vin' => $row->vin]);
-
-            
-            $photos = $image_data['result'][0]['car_photo']['photo'] ?? [];
-            
-            foreach ($photos as $url) {
-                $key = $s3->upload_image($row->vin, $url);
-                if ($key) $uploaded_keys[] = $key;
-            }
             
             $wpdb->update($table, ['car_info_synced' => 1], ['vin' => $row->vin]);
             

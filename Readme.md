@@ -138,10 +138,15 @@ define('AUCTION_S3_KEY', 'your-key');
 define('AUCTION_S3_SECRET', 'your-secret');
 define('AUCTION_S3_BUCKET', 'your-bucket');
 define('AUCTION_S3_REGION', 'us-east-1');
+```
 
-## Roadmap
+## Image Upload to S3 (Batch Job)
 
-- [ ] Implement API Client
-- [ ] Sync Jobs for Listings & Images
-- [ ] Admin Dashboard for Logs/Settings
-- [ ] Front-End Shortcodes & Templates
+A CRON job `s3_sync_event` processes image uploads from `auction_raw.image_json`:
+
+- Uploads each image to: `vin/image-hash.jpg`
+- Stores uploaded keys in: `s3_keys` column (JSON)
+- Marks record as `s3_synced = 1` when complete
+
+### Cron Hook
+`s3_sync_event` — runs every 2 minutes, 10 records per batch
