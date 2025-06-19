@@ -419,6 +419,7 @@
     background-color: grey;
     border-radius: 50%;
     filter: invert(1);
+    padding: 8px;
 }
 
 .carousel-control-next,

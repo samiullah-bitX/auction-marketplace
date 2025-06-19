@@ -23,17 +23,26 @@ class Sync_Job {
         $raw_table  = $wpdb->prefix . 'auction_raw';
 
         try {
-            $results = $this->api->fetch_active_lots($filters);
+            $option_key = 'auction_sync_current_page';
+            $page = intval(get_option($option_key, 1));
 
-            if (!isset($results['result']) || !is_array($results['result'])) {
+            $filters['per_page'] = 10;
+            $filters['page'] = $page;
+
+            $response = $this->api->fetch_active_lots($filters);
+
+            if (!isset($response['result']) || !is_array($response['result'])) {
                 log_debug('Invalid or empty result from auction API.');
+                delete_option($option_key); // reset for next time
                 return;
             }
+
+            $total_pages = $response['pagination']['total_pages'] ?? 1;
 
             // Start DB transaction
             $wpdb->query('START TRANSACTION');
 
-            foreach ($results['result'] as $car) {
+            foreach ($response['result'] as $car) {
                 $vin  = sanitize_text_field($car['vin']);
                 $auction_name = sanitize_text_field($car['auction_name']);
                 $created_at = current_time('mysql');
@@ -60,9 +69,6 @@ class Sync_Job {
                     'primary_image_url'     => $car['car_photo']['photo'][0] ?? null,
                     'crnt_bid_price'        => $car['active_bidding'][0]['current_bid'] ?? null,
                     'buy_now'               => ($car['buy_now_car'] != null && !empty($car['buy_now_car'])) ? $car['buy_now_car']["purchase_price"] : null,
-                    'engine_info_synced'    => 0, // Initially not synced
-                    'car_info_synced'       => 0, // Initially not synced
-                    'status'                => 'active',
                     'updated_at'            => $updated_at,
                 ];
 
@@ -119,10 +125,20 @@ class Sync_Job {
                     }
                 }
             }
+        
+            log_debug("Initial sync completed for {$total_pages} pages.");
+            
+            // Move to next page, or reset
+            if ($page < $total_pages) {
+                update_option($option_key, $page + 1);
+            } else {
+                delete_option($option_key); // Sync complete
+                log_debug("Initial full sync completed.");
+            }
 
             // Commit transaction
             $wpdb->query('COMMIT');
-            log_debug('Sync job completed. Total: ' . count($results['result']));
+            log_debug('Sync job completed. Total: ' . count($response['result']));
         } catch (\Throwable $e) {
             // Rollback transaction on error
             $wpdb->query('ROLLBACK');

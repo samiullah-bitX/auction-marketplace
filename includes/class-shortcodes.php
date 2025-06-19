@@ -547,6 +547,12 @@ class Shortcodes {
      * @return string|null The icon image path or null if not found
      */
     public static function get_tranmission_icon($tranmission_type) {
+
+        if (empty($tranmission_type) || !is_string($tranmission_type) || $tranmission_type == 'N/A') {
+            return "automatics.svg"; // Default icon if type is empty or not a string
+            # code...
+        }
+
         $tranmission_type = strtolower(trim($tranmission_type));
         $tranmission_icon_map = [
             'automatic' => 'automatics.svg',
@@ -570,6 +576,11 @@ class Shortcodes {
      * @return string|null The icon image path or null if not found
      */
     public static function get_key_icon($key_type) {
+
+        if (empty($key_type) || !is_string($key_type) || $key_type == 'N/A') {
+            return "nokey.svg";
+        }
+
         $key_type = strtolower(trim($key_type));
         $key_icon_map = [
             'present' => 'key.svg',
@@ -589,6 +600,11 @@ class Shortcodes {
      * @return string The icon image path or a default if not found
      */
     public static function get_fuel_icon($fuel_type) {
+
+        if (empty($fuel_type) || !is_string($fuel_type) || $fuel_type == 'N/A') {
+            return "nokey.svg";
+        }
+
         $fuel_type = strtolower(trim($fuel_type));
         $fuel_icon_map = [
             'gas' => 'patrol.svg',
@@ -599,7 +615,7 @@ class Shortcodes {
             'cng' => 'fuel-cng.svg',
             'lpg' => 'fuel-lpg.svg',
         ];
-        return $fuel_icon_map[$fuel_type] ?? "fuel-gasoline.svg";
+        return $fuel_icon_map[$fuel_type] ?? "patrol.svg";
     }
     
 }
