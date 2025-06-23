@@ -52,6 +52,49 @@ class Aws_S3_Helper {
         }
     }
 
+    /**
+     * Uploads image content to S3
+     */
+    public function send_images_to_lambda($vin, $photos): ?array {
+        if (empty($vin) || empty($photos)) {
+            log_debug("Invalid VIN or photos for Lambda upload: VIN = $vin, Photos = " . print_r($photos, true));
+            return null;
+        }
+
+        if (!is_array($photos)) {
+            log_debug("Photos is not an array for VIN $vin: " . print_r($photos, true));
+            return null;
+        }
+
+        try {
+            $response = wp_remote_post('https://38gowup0sf.execute-api.eu-north-1.amazonaws.com/production/uploads', [
+                'method'  => 'POST',
+                'headers' => ['Content-Type' => 'application/json'],
+                'body'    => wp_json_encode([
+                    'vin'           => $vin,
+                    'photo_urls'    => $photos
+                ]),
+                'timeout' => 30
+            ]);
+
+            if (is_wp_error($response)) {
+                log_debug("Lambda error for VIN $vin: " . $response->get_error_message());
+                return null;
+            }
+
+            $data = json_decode(wp_remote_retrieve_body($response), true);
+
+            log_debug("Lambda response for VIN $vin: " . print_r($data, true));
+
+            $uploaded = $data['s3_keys'] ?? [];
+
+            return !empty($uploaded) ? $uploaded : null;
+        } catch (\Exception $e) {
+            log_debug("Exception in send_images_to_lambda for VIN $vin: " . $e->getMessage());
+            return null;
+        }
+    }
+
     public function get_s3_url(string $key): string {
         return "https://{$this->bucket}.s3.amazonaws.com/{$key}";
     }

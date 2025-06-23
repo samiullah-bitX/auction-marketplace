@@ -37,7 +37,7 @@ class API_Client {
                     'IAAI CANADA'
                 ],
                 'without_sale_date' => 0,
-                'auction_date_from' => date('Y-m-d', strtotime('+2 day')), // Set to one day ahead if not defined
+                'auction_date_from' => date('Y-m-d', strtotime('+7 day')), // Set to one day ahead if not defined
             ];
             // Only set defaults if not already set
             foreach ($defaults as $key => $value) {

@@ -6,7 +6,7 @@
         <?php if (!empty($listing_params)): ?>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <?php foreach ($listing_params as $key => $value): ?>
-                    <span class="badge rounded-pill  text-dark px-3 py-2 d-flex align-items-center">
+                    <span class="badge rounded-pill text-dark px-3 py-2 d-flex align-items-center">
                         <?php
                             $label = str_replace(['-', '_'], ' ', $key);
                             $label = ucwords($label);
@@ -39,6 +39,7 @@
 
 <div class="container py-4 px-0">
     <div class="row">
+        
         <!-- Left Filter Sidebar -->
         <div class="col-md-12 col-lg-3 pe-lg-0">
             <div class="card bitcx_amp_filter_box">
@@ -252,7 +253,14 @@
             </div>
 
             <!-- AJAX-inserted page buttons -->
-            <div id="pagination-controls" class="d-flex gap-2 justify-content-end pagination"></div>
+            <!-- <div id="pagination-controls" class="d-flex gap-2 justify-content-end pagination"></div> -->
+            <!-- Load More Button -->
         </div>
+        
+        <?php if (!empty($results) && isset($has_more) && $has_more): ?>
+            <div id="load-more-wrapper" class="mt-5 text-center">
+                <button id="load-more-btn" data-offset="20">Load More</button>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

@@ -15,6 +15,8 @@ class Ajax_Handler {
         add_action('wp_ajax_nopriv_get_vehicle_model_by_make', [self::class, 'get_vehicle_model_by_make_id']);
         add_action('wp_ajax_paginate_auctions', [self::class, 'paginate']);
         add_action('wp_ajax_nopriv_paginate_auctions', [self::class, 'paginate']);
+        add_action('wp_ajax_load_more_cars', [self::class, 'load_more_cars']);
+        add_action('wp_ajax_nopriv_load_more_cars', [self::class, 'load_more_cars']);
     }
 
     public static function filter_auctions() {
@@ -180,11 +182,10 @@ class Ajax_Handler {
         $filters = $_POST['filters'] ?? [];
         $page = intval($_POST['page'] ?? 1);
     
-        $result = \AuctionMarketplace\Shortcodes::fetch_filtered_listings($filters, $page);
-        // error_log("Result: ".print_r($result, true)); // Debugging line
-        $cars = $result['data'];
-        $total = $result['total'];
-        $per_page = 10;
+        $results = \AuctionMarketplace\Shortcodes::fetch_filtered_listings($filters, $page);
+        $cars = $results['data'];
+        $total = $results['total'];
+        $per_page = 20;
         $pages = ceil($total / $per_page);
 
         ob_start();
@@ -192,9 +193,50 @@ class Ajax_Handler {
         $html = ob_get_clean();
     
         wp_send_json_success([
+            'html'          => $html,
+            'total_pages'   => $pages,
+            'current_page'  => $page
+        ]);
+    }
+
+    /**
+     * Load more cars via AJAX
+     *
+     * @return void
+    */
+
+    public static function load_more_cars() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'auction_listings';
+        $raw_table = $wpdb->prefix . 'auction_raw';
+    
+        $filters = $_POST['filters'] ?? [];
+        $offset = intval($_POST['offset'] ?? 0);
+        $per_page = 20;
+        $page = intval($offset / $per_page) + 1;
+        $results = \AuctionMarketplace\Shortcodes::fetch_filtered_listings($filters, $page, $per_page);
+        $cars = $results['data'];
+        $total = $results['total'];
+        $initial_load = false;
+
+        if (empty($cars)) {
+            wp_send_json_success([
+                'html' => '',
+                'total_pages' => 0,
+                'next_offset' => $offset + $per_page,
+                'has_more' => false
+            ]);
+        }
+
+        ob_start();
+        include plugin_dir_path(__DIR__) . 'templates/partials/listing-loop.php';
+        $html = ob_get_clean();
+    
+        wp_send_json_success([
             'html' => $html,
-            'total_pages' => $pages,
-            'current_page' => $page
+            'total_pages' => $total,
+            'next_offset' => $offset + $per_page,
+            'has_more' => count($cars) == $per_page
         ]);
     }
 }

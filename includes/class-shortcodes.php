@@ -19,7 +19,7 @@ class Shortcodes {
         ob_start();
         global $wpdb;
         $table = $wpdb->prefix . 'auction_listings';
-        $results = $wpdb->get_results("SELECT * FROM $table WHERE status = 'active' ORDER BY updated_at DESC LIMIT 10");
+        $results = $wpdb->get_results("SELECT * FROM $table WHERE status = 'active' ORDER BY updated_at DESC LIMIT 12");
 
         if (empty($results)) {
             echo '<p>No active auctions found.</p>';
@@ -40,6 +40,7 @@ class Shortcodes {
         global $wpdb;
         $table = $wpdb->prefix . 'auction_listings';
         $raw_table = $wpdb->prefix . 'auction_raw';
+        $per_page = 20; // Number of listings per page
         // Build WHERE clause based on $_GET filters
         $where = [];
         $params = [];
@@ -128,6 +129,9 @@ class Shortcodes {
         }
 
         ob_start();
+        $initial_load = true;
+        // 'next_offset' => $offset + $per_page;
+        $has_more = count($results) == $per_page;
         include plugin_dir_path(__DIR__) . '/templates/listing-with-filters.php';
         return ob_get_clean();
     }
@@ -298,21 +302,47 @@ class Shortcodes {
      * @throws \Exception If the date format is invalid
     */
 
-    public static function get_remaining_time($sale_date){
-        // Calculate remaining time
-        $now = time(); // current time in seconds
-        $future = intval($sale_date / 1000); // convert ms to s
+    // public static function get_remaining_time($sale_date){
+    //     // Calculate remaining time
+    //     $now = time(); // current time in seconds
+    //     $future = intval($sale_date / 1000); // convert ms to s
+    //     $diff = $future - $now;
+
+    //     if ($diff <= 0){
+    //         $remaining_str = "Expired";
+    //     }else{
+    //         $days    = floor($diff / 86400);
+    //         $hours   = floor(($diff % 86400) / 3600);
+    //         $minutes = floor(($diff % 3600) / 60);
+    //         $seconds = $diff % 60;
+    //         $remaining_str = "{$days}D {$hours}h {$minutes}m";
+    //     };
+
+    //     return $remaining_str;
+    // }
+
+    public static function get_remaining_time($sale_date) {
+        // If $sale_date is a string in "Y-m-d H:i:s" format, convert to timestamp
+        if (is_string($sale_date) && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $sale_date)) {
+            $future = strtotime($sale_date);
+        } else {
+            // Assume it's a timestamp in ms or s
+            $future = is_numeric($sale_date) && $sale_date > 1000000000000
+                ? intval($sale_date / 1000)
+                : intval($sale_date);
+        }
+
+        $now = time();
         $diff = $future - $now;
 
-        if ($diff <= 0){
+        if ($diff <= 0) {
             $remaining_str = "Expired";
-        }else{
+        } else {
             $days    = floor($diff / 86400);
             $hours   = floor(($diff % 86400) / 3600);
             $minutes = floor(($diff % 3600) / 60);
-            $seconds = $diff % 60;
             $remaining_str = "{$days}D {$hours}h {$minutes}m";
-        };
+        }
 
         return $remaining_str;
     }
@@ -404,7 +434,7 @@ class Shortcodes {
      * @return array Array containing 'data' and 'total' keys
      */
 
-    public static function fetch_filtered_listings(array $filters = [], int $page = 1, int $per_page = 10): array {
+    public static function fetch_filtered_listings(array $filters = [], int $page = 1, int $per_page = 20): array {
         global $wpdb;
     
         $table = $wpdb->prefix . 'auction_listings';
@@ -453,12 +483,12 @@ class Shortcodes {
         if (!empty($copart_iaai)) {
             // Remove any previous auction_name filter to avoid conflict
             $where = array_filter($where, function($clause) {
-            return strpos($clause, 'l.auction_name') === false;
+                return strpos($clause, 'l.auction_name') === false;
             });
             $placeholders = implode(',', array_fill(0, count($copart_iaai), '%s'));
             $where[] = "l.auction_name IN ($placeholders)";
             foreach ($copart_iaai as $auction) {
-            $params[] = $auction;
+                $params[] = $auction;
             }
         }
     
@@ -508,12 +538,17 @@ class Shortcodes {
     public static function format_sale_date($timestamp) {
         $sale_date_str = 'N/A';
         if ($timestamp) {
-            if (is_numeric($timestamp) && strlen($timestamp) > 10) {
-                $timestamp = intval($timestamp / 1000);
+            if (is_numeric($timestamp)) {
+                // If it's a numeric timestamp, check if it's in ms
+                if (strlen($timestamp) > 10) {
+                    $timestamp = intval($timestamp / 1000);
+                }
+                $sale_date_str = date('M d, Y H:i', $timestamp);
+            } elseif (is_string($timestamp) && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $timestamp)) {
+                // If it's a string in "Y-m-d H:i:s" format
+                $sale_date_str = date('M d, Y H:i', strtotime($timestamp));
             }
-            $sale_date_str = date('M d, Y H:i', $timestamp);
         }
-
         return $sale_date_str;
     }
 
@@ -526,18 +561,16 @@ class Shortcodes {
      */
     public static function get_drive_icon($drive_type) {
         $drive_type = strtolower(trim($drive_type));
-        $drive_icon_map = [
-            'fwd' => 'fwd.svg',
-            'front wheel drive' => 'fwd.svg',
-            'front-wheel drive' => 'fwd.svg',
-            'rwd' => 'rwd.svg',
-            'rear wheel drive' => 'rwd.svg',
-            'rear-wheel drive' => 'rwd.svg',
-            'awd' => 'awd.svg',
-            '4wd' => 'awd.svg',
-            'all wheel drive' => 'awd.svg',
-        ];
-        return $drive_icon_map[$drive_type] ?? "fwd.svg";
+        if (strpos($drive_type, 'fwd') !== false || strpos($drive_type, 'front') !== false) {
+            return 'fwd.svg';
+        }
+        if (strpos($drive_type, 'rwd') !== false || strpos($drive_type, 'rear') !== false) {
+            return 'rwd.svg';
+        }
+        if (strpos($drive_type, 'awd') !== false || strpos($drive_type, '4wd') !== false || strpos($drive_type, 'all wheel') !== false) {
+            return 'awd.svg';
+        }
+        return "fwd.svg";
     }
 
     /**
@@ -547,26 +580,18 @@ class Shortcodes {
      * @return string|null The icon image path or null if not found
      */
     public static function get_tranmission_icon($tranmission_type) {
-
         if (empty($tranmission_type) || !is_string($tranmission_type) || $tranmission_type == 'N/A') {
-            return "automatics.svg"; // Default icon if type is empty or not a string
-            # code...
+            return "automatics.svg";
         }
-
         $tranmission_type = strtolower(trim($tranmission_type));
-        $tranmission_icon_map = [
-            'automatic' => 'automatics.svg',
-            'auto' => 'automatics.svg',
-            'manual' => 'manual.svg',
-            // 'cvt' => 'cvt.svg',
-            // 'continuously variable' => 'cvt.svg',
-            // 'semi-automatic' => 'semi-automatic.svg',
-            // 'semi automatic' => 'semi-automatic.svg',
-            // 'tiptronic' => 'tiptronic.svg',
-            // 'dual clutch' => 'dual-clutch.svg',
-            // 'dct' => 'dual-clutch.svg',
-        ];
-        return $tranmission_icon_map[$tranmission_type] ?? "automatics.svg";
+        if (strpos($tranmission_type, 'auto') !== false) {
+            return 'automatics.svg';
+        }
+        if (strpos($tranmission_type, 'manual') !== false) {
+            return 'manual.svg';
+        }
+        // Add more conditions as needed for other types
+        return "automatics.svg";
     }
 
     /**
@@ -576,21 +601,17 @@ class Shortcodes {
      * @return string|null The icon image path or null if not found
      */
     public static function get_key_icon($key_type) {
-
         if (empty($key_type) || !is_string($key_type) || $key_type == 'N/A') {
             return "nokey.svg";
         }
-
         $key_type = strtolower(trim($key_type));
-        $key_icon_map = [
-            'present' => 'key.svg',
-            'yes' => 'key.svg',
-            'available' => 'key.svg',
-            'missing' => 'nokey.svg',
-            'no' => 'nokey.svg',
-            'not available' => 'nokey.svg',
-        ];
-        return $key_icon_map[$key_type] ?? "nokey.svg";
+        if (strpos($key_type, 'present') !== false || strpos($key_type, 'yes') !== false || strpos($key_type, 'available') !== false) {
+            return 'key.svg';
+        }
+        if (strpos($key_type, 'missing') !== false || strpos($key_type, 'no') !== false || strpos($key_type, 'not available') !== false) {
+            return 'nokey.svg';
+        }
+        return "nokey.svg";
     }
 
     /**
@@ -600,22 +621,28 @@ class Shortcodes {
      * @return string The icon image path or a default if not found
      */
     public static function get_fuel_icon($fuel_type) {
-
         if (empty($fuel_type) || !is_string($fuel_type) || $fuel_type == 'N/A') {
-            return "nokey.svg";
+            return "patrol.svg";
         }
-
         $fuel_type = strtolower(trim($fuel_type));
-        $fuel_icon_map = [
-            'gas' => 'patrol.svg',
-            'petrol' => 'patrol.svg',
-            'diesel' => 'diesel.svg',
-            'electric' => 'electro.svg',
-            'hybrid' => 'fuel-hybrid.svg',
-            'cng' => 'fuel-cng.svg',
-            'lpg' => 'fuel-lpg.svg',
-        ];
-        return $fuel_icon_map[$fuel_type] ?? "patrol.svg";
+        if (strpos($fuel_type, 'gas') !== false || strpos($fuel_type, 'petrol') !== false) {
+            return 'patrol.svg';
+        }
+        if (strpos($fuel_type, 'diesel') !== false) {
+            return 'diesel.svg';
+        }
+        if (strpos($fuel_type, 'electric') !== false) {
+            return 'electro.svg';
+        }
+        if (strpos($fuel_type, 'hybrid') !== false || strpos($fuel_type, 'flexible') !== false) {
+            return 'hybrid.svg';
+        }
+        // if (strpos($fuel_type, 'cng') !== false) {
+        //     return 'fuel-cng.svg';
+        // }
+        // if (strpos($fuel_type, 'lpg') !== false) {
+        //     return 'fuel-lpg.svg';
+        // }
+        return "patrol.svg";
     }
-    
 }

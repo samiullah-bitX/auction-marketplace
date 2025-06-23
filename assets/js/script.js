@@ -302,6 +302,40 @@ jQuery(document).ready(function($) {
             });
         });
     }
+
+    // Load More Button
+
+    $('#load-more-btn').on('click', function() {
+        let button = $(this);
+        let offset = button.data('offset');
+        const filters = {};
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.forEach((value, key) => {
+            filters[key] = value;
+        });
+    
+        $.ajax({
+            url: ajaxURL,
+            type: 'POST',
+            data: {
+                action: 'load_more_cars',
+                offset: offset,
+                filters: filters,
+            },
+            success: function(response) {
+                if (response.success && response.data.html) {
+                    $('#listing-results').append(response.data.html);
+                    button.data('offset', response.data.next_offset);
+                    if (!response.data.has_more) {
+                        button.remove(); // remove button if no more data
+                    }
+                } else {
+                    button.text('No More Cars').prop('disabled', true);
+                }
+            }
+        });
+    });
+      
     
 });
 

@@ -39,13 +39,11 @@ class Plugin_Init {
         //     (new \AuctionMarketplace\Status_Job())->run();
         // });
 
-        add_action('wp_footer', [self::class, 'inject_footer_code']);
-        
         Shortcodes::register();
         Ajax_Handler::register();
 
         if (!wp_next_scheduled('auction_cron_event')) {
-            wp_schedule_event(time(), 'every_5_minutes', 'auction_cron_event');
+            wp_schedule_event(time(), 'every_2_minutes', 'auction_cron_event');
         }
 
         if (!wp_next_scheduled('engine_sync_event')) {
@@ -63,6 +61,8 @@ class Plugin_Init {
         if (!wp_next_scheduled('s3_sync_event')) {
             wp_schedule_event(time(), 'every_2_minutes', 's3_sync_event');
         }
+
+        add_action('wp_footer', [self::class, 'inject_footer_code']);
 
     }
 
@@ -92,17 +92,17 @@ class Plugin_Init {
     
     public function handle_cron_event() {
         $job = new Sync_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     public function handle_engine_sync_event() {
         $job = new Engine_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     public function handle_image_sync_event() {
         $job = new Image_Job();
-        $job->run(); // Optional: add filters here
+        // $job->run(); // Optional: add filters here
     }
 
     // public function handle_status_sync_event() {
@@ -112,7 +112,7 @@ class Plugin_Init {
 
     public function handle_s3_sync_event() {
         $job = new S3_Sync_Job();
-        $job->run();
+        // $job->run();
     }
 
     public static function inject_footer_code() {
