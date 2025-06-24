@@ -20,15 +20,24 @@ class Sync_Job {
 
         $main_table = $wpdb->prefix . 'auction_listings';
         $raw_table  = $wpdb->prefix . 'auction_raw';
+        
+        $page_key      = 'auction_sync_current_page';
+        $done_key      = 'auction_sync_done';             // One-time initial sync tracker
+        $last_run_key  = 'auction_sync_last_run_day';     // Tracks daily runs
+        $sync_time     = 'auction_sync_done_at';     // Tracks daily runs
+        
         $start_time = microtime(true);
-
-        $page_key = 'auction_sync_current_page';
-        $done_key = 'auction_sync_done';
-
-        // Stop if previously completed
-        if (get_option($done_key) === 'yes') {
-            log_debug('Sync skipped — already marked as complete.');
+        $today         = date('Y-m-d');
+        // $today = date('Y-m-d', strtotime('+1 day'));
+        
+        $last_run = get_option($last_run_key);
+        if ($last_run == $today) {
+            log_debug("Sync already completed today ($today). Skipping.");
             return;
+        }
+
+        if ($last_run != $today) {
+            update_option($page_key, 1); // Reset page count
         }
 
         try {
@@ -44,12 +53,13 @@ class Sync_Job {
             $response = $this->api->fetch_active_lots($filters);
             $results = $response['result'] ?? [];
             $total_pages = $response['pagination']['total_pages'] ?? 1;
+            $now = current_time('mysql');
 
             if (empty($results)) {
                 log_debug("Page $page returned no results. Marking sync as complete.");
                 delete_option($page_key);
-                update_option($done_key, 'yes');
-                update_option('auction_sync_done_at', current_time('mysql'));
+                update_option($last_run_key, $today);
+                update_option($sync_time, $now);
                 $duration = round(microtime(true) - $start_time, 2);
                 log_debug(" Processing Took:  {$duration}s. ");
                 return;
@@ -59,7 +69,6 @@ class Sync_Job {
             $main_params = [];
             $raw_rows = [];
             $raw_params = [];
-            $now = current_time('mysql');
 
             foreach ($results as $car) {
                 $vin = strtoupper(preg_replace('/[^A-Z0-9]/', '', $car['vin']));
@@ -139,8 +148,8 @@ class Sync_Job {
                 update_option($page_key, $page + 1);
             } else {
                 delete_option($page_key);
-                update_option($done_key, 'yes');
-                update_option('auction_sync_done_at', $now);
+                update_option($last_run_key, $today);
+                update_option($sync_time, $now);
                 log_debug("Sync finished — all $total_pages pages processed.");
             }
 

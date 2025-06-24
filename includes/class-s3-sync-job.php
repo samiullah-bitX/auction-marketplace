@@ -12,7 +12,7 @@ class S3_Sync_Job {
         $raw_table = $wpdb->prefix . 'auction_raw';
 
         $rows = $wpdb->get_results(
-            "SELECT vin, image_json FROM $raw_table WHERE s3_synced = 0 LIMIT 1"
+            "SELECT vin, image_json FROM $raw_table WHERE s3_synced = 0 LIMIT 10"
         );
 
         if (empty($rows)) {
@@ -42,30 +42,21 @@ class S3_Sync_Job {
                     continue;
                 }
 
-                $s3Bucket = $s3->send_images_to_lambda($vin, $photos);
+                $s3BucketKeys = $s3->send_images_to_lambda($vin, $photos);
 
-                log_debug("S3 Bucket Response for VIN $vin: " . print_r($s3Bucket, true));
-
-                // exit;
-                // $uploaded = [];
-                // foreach ($photos as $url) {
-                //     $key = $s3->upload_image($vin, $url);
-                //     if ($key) {
-                //         $uploaded[] = $key;
-                //     }
-                // }
-
-                if (!empty($uploaded)) {
-                    $escaped_keys = esc_sql(wp_json_encode($uploaded));
-                    $escaped_time = esc_sql($now);
-                    $case_keys    .= "WHEN '$vin' THEN '$escaped_keys' ";
-                    $case_updated .= "WHEN '$vin' THEN '$escaped_time' ";
-                    $vins[] = "'$vin'";
-
-                    log_debug("[S3 Sync Job] Uploaded " . count($uploaded) . " images for VIN: $vin");
-                } else {
-                    log_debug("[S3 Sync Job] Upload failed or empty for VIN: $vin");
+                if (is_null($s3BucketKeys) || empty($s3BucketKeys) || !is_array($s3BucketKeys)) {
+                    log_debug("[S3 Sync Job] Failed to upload images for VIN: $vin");
+                    continue;
                 }
+
+                $escaped_keys = esc_sql(wp_json_encode($s3BucketKeys));
+                $escaped_time = esc_sql($now);
+                $case_keys    .= "WHEN '$vin' THEN '$escaped_keys' ";
+                $case_updated .= "WHEN '$vin' THEN '$escaped_time' ";
+                $vins[] = "'$vin'";
+
+                log_debug("[S3 Sync Job] Uploaded " . count($s3BucketKeys) . " images for VIN: $vin");
+                
             }
 
             if (empty($vins)) {
@@ -80,8 +71,8 @@ class S3_Sync_Job {
                     s3_image_keys = CASE vin $case_keys END,
                     s3_synced = 1,
                     updated_at = CASE vin $case_updated END
-                WHERE vin IN (" . implode(',', $vins) . ")
-            ";
+                WHERE vin IN (" . implode(',', $vins) . ")";
+
             $wpdb->query($update_sql);
 
             $wpdb->query('COMMIT');

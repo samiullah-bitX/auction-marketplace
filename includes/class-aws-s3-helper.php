@@ -83,12 +83,17 @@ class Aws_S3_Helper {
             }
 
             $data = json_decode(wp_remote_retrieve_body($response), true);
+            
+            if(!isset($data["statusCode"]) && $data["statusCode"] != 200) {
+                log_debug("Lambda response error for VIN $vin: " . print_r($data, true));
+                return null;
+            }
 
-            log_debug("Lambda response for VIN $vin: " . print_r($data, true));
-
-            $uploaded = $data['s3_keys'] ?? [];
-
+            $response_body = json_decode($data["body"], true);
+            
+            $uploaded = !empty($response_body) ? $response_body["s3_keys"] : [];
             return !empty($uploaded) ? $uploaded : null;
+
         } catch (\Exception $e) {
             log_debug("Exception in send_images_to_lambda for VIN $vin: " . $e->getMessage());
             return null;
